@@ -4,7 +4,7 @@ import { render } from 'react-dom'
 // import thunk from 'redux-thunk'
 // import { Provider } from 'react-redux'
 // import { BrowserRouter as Router } from 'react-router-dom'
-// import 'semantic-ui-css/semantic.min.css'
+import 'semantic-ui-css/semantic.min.css'
 // import reducers from './reducers'
 import App from './App'
 
