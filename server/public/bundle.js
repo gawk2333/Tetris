@@ -1100,11 +1100,32 @@ var App = function App() {
     _useState2 = _slicedToArray(_useState, 2),
     gameState = _useState2[0],
     setGameState = _useState2[1];
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_components_HeaderPannel__WEBPACK_IMPORTED_MODULE_2__["default"], {
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(0),
+    _useState4 = _slicedToArray(_useState3, 2),
+    keyPressNumber = _useState4[0],
+    setKeyPressNumber = _useState4[1];
+  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(null),
+    _useState6 = _slicedToArray(_useState5, 2),
+    keyCode = _useState6[0],
+    setKeyCode = _useState6[1];
+  var keyDownHandler = function keyDownHandler(e) {
+    if (e) {
+      setKeyPressNumber(keyPressNumber + 1);
+      setKeyCode(e.keyCode);
+    }
+  };
+  var getKeyCode = function getKeyCode() {
+    return keyCode;
+  };
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
+    onKeyDown: keyDownHandler
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_components_HeaderPannel__WEBPACK_IMPORTED_MODULE_2__["default"], {
     gameState: gameState,
     setGameState: setGameState
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_components_Playground__WEBPACK_IMPORTED_MODULE_1__["default"], {
-    gameState: gameState
+    gameState: gameState,
+    getKeyCode: getKeyCode,
+    keyPressNumber: keyPressNumber
   }));
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (App);
@@ -1163,6 +1184,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils_objectCreater__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/objectCreater */ "./client/utils/objectCreater.js");
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
 /* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_2__);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -1175,17 +1199,89 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var rowNumber = 12;
 var colNumber = 10;
 var gameInterval;
-var activeCellSpot = (0,_utils_objectCreater__WEBPACK_IMPORTED_MODULE_1__["default"])();
+var activeCellSpots = (0,_utils_objectCreater__WEBPACK_IMPORTED_MODULE_1__["default"])();
 function Playground(_ref) {
-  var gameState = _ref.gameState;
+  var gameState = _ref.gameState,
+    getKeyCode = _ref.getKeyCode,
+    keyPressNumber = _ref.keyPressNumber;
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
     _useState2 = _slicedToArray(_useState, 2),
     cells = _useState2[0],
     setCells = _useState2[1];
-  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(activeCellSpot),
+  var _useState3 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(activeCellSpots),
     _useState4 = _slicedToArray(_useState3, 2),
     activeObject = _useState4[0],
     setActiveObject = _useState4[1];
+  var moveObject = function moveObject(objectCells, rowfix, colfix) {
+    objectCells.map(function (cell) {
+      cell.rowIndex += rowfix;
+      cell.colIndex += colfix;
+      return cell;
+    });
+    return objectCells;
+  };
+
+  // const rotateObject = (objectCells) => {
+  //   const centerSpot = _.last(objectCells)
+  //   console.log(centerSpot)
+  //   const rotatedCells = objectCells.map(eachCell =>
+  //     // top or bottom
+  //     if(eachCell.rowIndex !== centerSpot.rowIndex && eachCell.colIndex === centerSpot.colIndex){
+  //     }
+  //     )
+  // }
+
+  var onKeyCodeChanges = function onKeyCodeChanges() {
+    var keyCode = getKeyCode();
+    var newObject = lodash__WEBPACK_IMPORTED_MODULE_2___default().cloneDeep(activeObject);
+    var availableArr;
+    switch (keyCode) {
+      default:
+        break;
+      case 37:
+        availableArr = newObject.map(function (eachCell) {
+          return checkIfTheNextSpotAvailable(eachCell, 'left');
+        });
+        // console.log('new', availableArr)
+        if (availableArr.some(function (result) {
+          return result === false;
+        })) {
+          console.log('stop');
+        } else {
+          moveObject(activeObject, 0, -1);
+        }
+        break;
+      case 38:
+        // rotateObject(activeObject)
+        break;
+      case 39:
+        availableArr = newObject.map(function (eachCell) {
+          return checkIfTheNextSpotAvailable(eachCell, 'right');
+        });
+        // console.log('new', availableArr)
+        if (availableArr.some(function (result) {
+          return result === false;
+        })) {
+          console.log('stop');
+        } else {
+          moveObject(activeObject, 0, 1);
+        }
+        break;
+      case 40:
+        availableArr = newObject.map(function (eachCell) {
+          return checkIfTheNextSpotAvailable(eachCell, 'down');
+        });
+        // console.log('new', availableArr)
+        if (availableArr.some(function (result) {
+          return result === false;
+        })) {
+          console.log('stop');
+        } else {
+          moveObject(activeObject, 1, 0);
+        }
+        break;
+    }
+  };
   // initialize
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     var createCells = function createCells() {
@@ -1206,48 +1302,113 @@ function Playground(_ref) {
     };
     createCells();
   }, []);
+  (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    onKeyCodeChanges();
+  }, [keyPressNumber]);
   var checkIfTheNextSpotAvailable = function checkIfTheNextSpotAvailable(spot, direction) {
     if (direction === 'down') {
+      var nextSpot = _objectSpread(_objectSpread({}, spot), {}, {
+        rowIndex: spot.rowIndex + 1
+      });
       var _cells$filter = cells.filter(function (cell) {
-          return cell.rowIndex === spot.rowIndex + 1 && cell.colIndex === spot.colIndex;
+          return cell.rowIndex === nextSpot.rowIndex && cell.colIndex === nextSpot.colIndex;
         }),
         _cells$filter2 = _slicedToArray(_cells$filter, 1),
-        nextSpot = _cells$filter2[0];
-      if (nextSpot.hasDroped === true) {
+        nextCell = _cells$filter2[0];
+      // console.log('next down', nextCell)
+      if (nextCell && nextCell.hasDroped) {
+        return false;
+      }
+      if (nextSpot.rowIndex > rowNumber) {
+        return false;
+      }
+      return true;
+    }
+    if (direction === 'right') {
+      var _nextSpot = _objectSpread(_objectSpread({}, spot), {}, {
+        colIndex: spot.colIndex + 1
+      });
+      var _cells$filter3 = cells.filter(function (cell) {
+          return cell.rowIndex === _nextSpot.rowIndex && cell.colIndex === _nextSpot.colIndex;
+        }),
+        _cells$filter4 = _slicedToArray(_cells$filter3, 1),
+        _nextCell = _cells$filter4[0];
+      // if (!nextCell) { return false }
+      if (_nextCell && _nextCell.hasDroped) {
+        return false;
+      }
+      if (_nextSpot.colIndex > colNumber) {
+        return false;
+      }
+      return true;
+    }
+    if (direction === 'left') {
+      var _nextSpot2 = _objectSpread(_objectSpread({}, spot), {}, {
+        colIndex: spot.colIndex - 1
+      });
+      var _cells$filter5 = cells.filter(function (cell) {
+          return cell.rowIndex === _nextSpot2.rowIndex && cell.colIndex === _nextSpot2.colIndex;
+        }),
+        _cells$filter6 = _slicedToArray(_cells$filter5, 1),
+        _nextCell2 = _cells$filter6[0];
+      if (!_nextCell2) {
+        return false;
+      }
+      if (_nextCell2 && _nextCell2.hasDroped) {
+        return false;
+      }
+      if (_nextSpot2.colIndex < 0) {
         return false;
       }
       return true;
     }
   };
-  var settleCurrentSpot = function settleCurrentSpot(spot) {
-    spot.active = false;
-    spot.hasDroped = true;
-    var newCells = cells.filter(function (cell) {
-      return cell.rowIndex !== spot.rowIndex || cell.colIndex !== spot.colIndex;
+  var settleCurrentObject = function settleCurrentObject(objectCells) {
+    var currentObject = objectCells.map(function (cell) {
+      cell.active = false;
+      cell.hasDroped = true;
+      return cell;
     });
-    newCells.push(spot);
-    setCells(newCells.sort(function (a, b) {
+    var filteredCells = cells.filter(function (cell) {
+      return !currentObject.some(function (objectcell) {
+        return objectcell.rowIndex === cell.rowIndex && objectcell.colIndex === cell.colIndex;
+      });
+    });
+    // console.log('filtered1', filteredCells)
+    var combinedCells = filteredCells.concat(currentObject);
+    // console.log('filtered2', filteredCells)
+    setCells(combinedCells.sort(function (a, b) {
       return a.rowIndex - b.rowIndex || a.colIndex - b.colIndex;
     }));
   };
   var onGameStart = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
-    var spot = lodash__WEBPACK_IMPORTED_MODULE_2___default().cloneDeep(activeObject);
     gameInterval = setTimeout(function () {
-      spot.rowIndex++;
-      spot.active = true;
-      setActiveObject(spot);
+      var newObject = lodash__WEBPACK_IMPORTED_MODULE_2___default().cloneDeep(activeObject);
+      var availableArr = newObject.map(function (eachCell) {
+        return checkIfTheNextSpotAvailable(eachCell, 'down');
+      });
+      if (availableArr.some(function (result) {
+        return result === false;
+      })) {
+        settleCurrentObject(activeObject);
+        clearTimeout(gameInterval);
+        setActiveObject((0,_utils_objectCreater__WEBPACK_IMPORTED_MODULE_1__["default"])());
+      } else {
+        var newActiveObject = newObject.map(function (cell) {
+          cell.rowIndex++;
+          return cell;
+        });
+        clearTimeout(gameInterval);
+        setActiveObject(newActiveObject);
+      }
     }, 1000);
-    if (activeObject.rowIndex === rowNumber || !checkIfTheNextSpotAvailable(activeObject, 'down')) {
-      settleCurrentSpot(spot);
-      clearTimeout(gameInterval);
-      setActiveObject((0,_utils_objectCreater__WEBPACK_IMPORTED_MODULE_1__["default"])());
-    }
-  }, [gameState, activeObject.rowIndex]);
+  }, [gameState, activeObject]);
   var onGameStop = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
-    var spot = lodash__WEBPACK_IMPORTED_MODULE_2___default().cloneDeep(activeObject);
-    spot.active = false;
-    setActiveObject(spot);
-    clearTimeout(gameInterval);
+    // const newObject = _.cloneDeep(activeObject)
+    // const pausedObject = newObject.map(spot => {
+    //   spot.active = false
+    //   clearTimeout(gameInterval)
+    // })
   }, [gameState]);
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     if (gameState === 'started') {
@@ -1259,11 +1420,18 @@ function Playground(_ref) {
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
     className: "playground"
   }, cells.length && cells.map(function (cell) {
-    if (cell.rowIndex === activeObject.rowIndex && cell.colIndex === activeObject.colIndex) {
+    if (activeObject.some(function (objcell) {
+      return objcell.rowIndex === cell.rowIndex && objcell.colIndex === cell.colIndex;
+    })) {
+      var _activeObject$filter = activeObject.filter(function (objcell) {
+          return objcell.rowIndex === cell.rowIndex && objcell.colIndex === cell.colIndex;
+        }),
+        _activeObject$filter2 = _slicedToArray(_activeObject$filter, 1),
+        activeCell = _activeObject$filter2[0];
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
         className: "cell",
         style: {
-          backgroundColor: activeObject.color
+          backgroundColor: activeCell.color
         },
         key: "".concat(cell.rowIndex, "-").concat(cell.colIndex)
       });
@@ -1292,19 +1460,104 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_0__);
+
 var colors = ['red', 'blue', 'green', 'yellow', 'orange', 'brown', 'green', 'grey', 'black', 'purple', 'red'];
+var shapes = ['I', 'J', 'L', 'O', 'S', 'T', 'Z'];
 var createActiveCellSpot = function createActiveCellSpot() {
   var newActiveCellSpot = {
-    rowIndex: 1,
+    rowIndex: 0,
     colIndex: parseInt(Math.random() * 4 + 4),
     // colIndex needs to be between 3 to 7
     color: colors[parseInt(Math.random() * 10)],
-    active: false,
+    active: true,
     hasDroped: false
   };
   return newActiveCellSpot;
 };
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (createActiveCellSpot);
+
+// topleft    top    topup
+// left              right
+// bottomleft bottom bottomright
+var createOtherCellSpots = function createOtherCellSpots(centerSpot, newSpotPosition) {
+  var newSpot = lodash__WEBPACK_IMPORTED_MODULE_0___default().cloneDeep(centerSpot);
+  switch (newSpotPosition) {
+    default:
+      return;
+    case 'topleft':
+      newSpot.rowIndex -= 1;
+      newSpot.colIndex -= 1;
+      break;
+    case 'top':
+      newSpot.rowIndex -= 1;
+      break;
+    case 'topright':
+      newSpot.rowIndex -= 1;
+      newSpot.colIndex += 1;
+      break;
+    case 'left':
+      newSpot.colIndex -= 1;
+      break;
+    case 'right':
+      newSpot.colIndex += 1;
+      break;
+    case 'bottomleft':
+      newSpot.rowIndex += 1;
+      newSpot.colIndex -= 1;
+      break;
+    case 'bottom':
+      newSpot.rowIndex += 1;
+      break;
+    case 'bottomright':
+      newSpot.rowIndex += 1;
+      newSpot.colIndex += 1;
+      break;
+    case 'toptop':
+      newSpot.rowIndex -= 2;
+      break;
+  }
+  return newSpot;
+};
+var createCellSpotsArray = function createCellSpotsArray(spot, positions) {
+  var cellSpotsArray = positions.map(function (position) {
+    return createOtherCellSpots(spot, position);
+  });
+  cellSpotsArray.push(spot);
+  return cellSpotsArray;
+};
+var createActiveObject = function createActiveObject() {
+  var spot = createActiveCellSpot();
+  var shape = shapes[parseInt(Math.random() * 6)];
+  var positions;
+  switch (shape) {
+    default:
+      return;
+    case 'I':
+      positions = ['toptop', 'top', 'bottom'];
+      break;
+    case 'J':
+      positions = ['top', 'bottom', 'bottomleft'];
+      break;
+    case 'L':
+      positions = ['top', 'bottom', 'bottomright'];
+      break;
+    case 'O':
+      positions = ['top', 'topright', 'right'];
+      break;
+    case 'S':
+      positions = ['top', 'topright', 'left'];
+      break;
+    case 'T':
+      positions = ['topleft', 'top', 'topright'];
+      break;
+    case 'Z':
+      positions = ['topleft', 'top', 'right'];
+      break;
+  }
+  return createCellSpotsArray(spot, positions);
+};
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (createActiveObject);
 
 /***/ }),
 

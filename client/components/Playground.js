@@ -1,14 +1,80 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import createActiveCellSpot from '../utils/objectCreater'
+import createActiveObject from '../utils/objectCreater'
 import _ from 'lodash'
 
 const rowNumber = 12
 const colNumber = 10
 let gameInterval
-const activeCellSpot = createActiveCellSpot()
-export default function Playground ({ gameState }) {
+const activeCellSpots = createActiveObject()
+
+export default function Playground ({ gameState, getKeyCode, keyPressNumber }) {
   const [cells, setCells] = useState([])
-  const [activeObject, setActiveObject] = useState(activeCellSpot)
+  const [activeObject, setActiveObject] = useState(activeCellSpots)
+
+  const moveObject = (objectCells, rowfix, colfix) => {
+    objectCells.map(cell => {
+      cell.rowIndex += rowfix
+      cell.colIndex += colfix
+      return cell
+    })
+    return objectCells
+  }
+
+  // const rotateObject = (objectCells) => {
+  //   const centerSpot = _.last(objectCells)
+  //   console.log(centerSpot)
+  //   const rotatedCells = objectCells.map(eachCell =>
+  //     // top or bottom
+  //     if(eachCell.rowIndex !== centerSpot.rowIndex && eachCell.colIndex === centerSpot.colIndex){
+  //     }
+  //     )
+  // }
+
+  const onKeyCodeChanges = () => {
+    const keyCode = getKeyCode()
+    const newObject = _.cloneDeep(activeObject)
+    let availableArr
+    switch (keyCode) {
+      default:
+        break
+      case 37:
+        availableArr = newObject.map(eachCell => {
+          return checkIfTheNextSpotAvailable(eachCell, 'left')
+        })
+        // console.log('new', availableArr)
+        if (availableArr.some(result => result === false)) {
+          console.log('stop')
+        } else {
+          moveObject(activeObject, 0, -1)
+        }
+        break
+      case 38:
+        // rotateObject(activeObject)
+        break
+      case 39:
+        availableArr = newObject.map(eachCell => {
+          return checkIfTheNextSpotAvailable(eachCell, 'right')
+        })
+        // console.log('new', availableArr)
+        if (availableArr.some(result => result === false)) {
+          console.log('stop')
+        } else {
+          moveObject(activeObject, 0, 1)
+        }
+        break
+      case 40:
+        availableArr = newObject.map(eachCell => {
+          return checkIfTheNextSpotAvailable(eachCell, 'down')
+        })
+        // console.log('new', availableArr)
+        if (availableArr.some(result => result === false)) {
+          console.log('stop')
+        } else {
+          moveObject(activeObject, 1, 0)
+        }
+        break
+    }
+  }
   // initialize
   useEffect(() => {
     const createCells = () => {
@@ -30,45 +96,94 @@ export default function Playground ({ gameState }) {
     createCells()
   }, [])
 
+  useEffect(() => {
+    onKeyCodeChanges()
+  }, [keyPressNumber])
+
   const checkIfTheNextSpotAvailable = (spot, direction) => {
     if (direction === 'down') {
-      const [nextSpot] = cells.filter(cell => cell.rowIndex === spot.rowIndex + 1 && cell.colIndex === spot.colIndex)
-      if (nextSpot.hasDroped === true) {
+      const nextSpot = {
+        ...spot,
+        rowIndex: spot.rowIndex + 1
+      }
+      const [nextCell] = cells.filter(cell => cell.rowIndex === nextSpot.rowIndex && cell.colIndex === nextSpot.colIndex)
+      // console.log('next down', nextCell)
+      if (nextCell && nextCell.hasDroped) {
         return false
       }
+      if (nextSpot.rowIndex > rowNumber) { return false }
+      return true
+    }
+    if (direction === 'right') {
+      const nextSpot = {
+        ...spot,
+        colIndex: spot.colIndex + 1
+      }
+      const [nextCell] = cells.filter(cell => cell.rowIndex === nextSpot.rowIndex && cell.colIndex === nextSpot.colIndex)
+      // if (!nextCell) { return false }
+      if (nextCell && nextCell.hasDroped) {
+        return false
+      }
+      if (nextSpot.colIndex > colNumber) { return false }
+      return true
+    }
+    if (direction === 'left') {
+      const nextSpot = {
+        ...spot,
+        colIndex: spot.colIndex - 1
+      }
+      const [nextCell] = cells.filter(cell => cell.rowIndex === nextSpot.rowIndex && cell.colIndex === nextSpot.colIndex)
+      if (!nextCell) { return false }
+      if (nextCell && nextCell.hasDroped) {
+        return false
+      }
+      if (nextSpot.colIndex < 0) { return false }
       return true
     }
   }
 
-  const settleCurrentSpot = (spot) => {
-    spot.active = false
-    spot.hasDroped = true
-    const newCells = cells
-      .filter(cell => cell.rowIndex !== spot.rowIndex || cell.colIndex !== spot.colIndex)
-    newCells
-      .push(spot)
-    setCells(newCells.sort((a, b) => a.rowIndex - b.rowIndex || a.colIndex - b.colIndex))
+  const settleCurrentObject = (objectCells) => {
+    const currentObject = objectCells.map(cell => {
+      cell.active = false
+      cell.hasDroped = true
+      return cell
+    })
+    const filteredCells = cells
+      .filter(cell => !currentObject.some(objectcell => objectcell.rowIndex === cell.rowIndex && objectcell.colIndex === cell.colIndex))
+    // console.log('filtered1', filteredCells)
+    const combinedCells = filteredCells
+      .concat(currentObject)
+    // console.log('filtered2', filteredCells)
+    setCells(combinedCells.sort((a, b) => a.rowIndex - b.rowIndex || a.colIndex - b.colIndex))
   }
 
   const onGameStart = useCallback(() => {
-    const spot = _.cloneDeep(activeObject)
     gameInterval = setTimeout(() => {
-      spot.rowIndex++
-      spot.active = true
-      setActiveObject(spot)
+      const newObject = _.cloneDeep(activeObject)
+      const availableArr = newObject.map(eachCell => {
+        return checkIfTheNextSpotAvailable(eachCell, 'down')
+      })
+      if (availableArr.some(result => result === false)) {
+        settleCurrentObject(activeObject)
+        clearTimeout(gameInterval)
+        setActiveObject(createActiveObject())
+      } else {
+        const newActiveObject = newObject.map(cell => {
+          cell.rowIndex++
+          return cell
+        })
+        clearTimeout(gameInterval)
+        setActiveObject(newActiveObject)
+      }
     }, 1000)
-    if (activeObject.rowIndex === rowNumber || !checkIfTheNextSpotAvailable(activeObject, 'down')) {
-      settleCurrentSpot(spot)
-      clearTimeout(gameInterval)
-      setActiveObject(createActiveCellSpot())
-    }
-  }, [gameState, activeObject.rowIndex])
+  }, [gameState, activeObject])
 
   const onGameStop = useCallback(() => {
-    const spot = _.cloneDeep(activeObject)
-    spot.active = false
-    setActiveObject(spot)
-    clearTimeout(gameInterval)
+    // const newObject = _.cloneDeep(activeObject)
+    // const pausedObject = newObject.map(spot => {
+    //   spot.active = false
+    //   clearTimeout(gameInterval)
+    // })
   }, [gameState])
 
   useEffect(() => {
@@ -81,8 +196,9 @@ export default function Playground ({ gameState }) {
 
   return (<div className='playground'>
     {cells.length && cells.map(cell => {
-      if (cell.rowIndex === activeObject.rowIndex && cell.colIndex === activeObject.colIndex) {
-        return (<div className='cell' style={{ backgroundColor: activeObject.color }} key={`${cell.rowIndex}-${cell.colIndex}`}></div>)
+      if (activeObject.some(objcell => objcell.rowIndex === cell.rowIndex && objcell.colIndex === cell.colIndex)) {
+        const [activeCell] = activeObject.filter(objcell => objcell.rowIndex === cell.rowIndex && objcell.colIndex === cell.colIndex)
+        return (<div className='cell' style={{ backgroundColor: activeCell.color }} key={`${cell.rowIndex}-${cell.colIndex}`}></div>)
       } else {
         return (<div className='cell' style={{ backgroundColor: cell.color }} key={`${cell.rowIndex}-${cell.colIndex}`}></div>)
       }

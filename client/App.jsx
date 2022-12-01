@@ -5,10 +5,27 @@ import HeaderPannel from './components/HeaderPannel'
 
 const App = () => {
   const [gameState, setGameState] = useState('ready')
+  const [keyPressNumber, setKeyPressNumber] = useState(0)
+  const [keyCode, setKeyCode] = useState(null)
+
+  const keyDownHandler = (e) => {
+    if (e) {
+      setKeyPressNumber(keyPressNumber + 1)
+      setKeyCode(e.keyCode)
+    }
+  }
+
+  const getKeyCode = () => {
+    return keyCode
+  }
+
   return (
-    <div>
-      <HeaderPannel gameState={gameState} setGameState={setGameState}/>
-      <Playground gameState = {gameState}/>
+    <div onKeyDown={keyDownHandler}>
+      <HeaderPannel gameState={gameState}
+        setGameState={setGameState} />
+      <Playground gameState = {gameState}
+        getKeyCode={getKeyCode}
+        keyPressNumber={keyPressNumber}/>
     </div>
   )
 }
