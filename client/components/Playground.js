@@ -12,12 +12,14 @@ export default function Playground ({ gameState, getKeyCode, keyPressNumber }) {
   const [activeObject, setActiveObject] = useState(activeCellSpots)
 
   const moveObject = (objectCells, rowfix, colfix) => {
-    objectCells.map(cell => {
+    const objectCopy = _.cloneDeep(objectCells)
+    clearTimeout(gameInterval)
+    const movedObject = objectCopy.map(cell => {
       cell.rowIndex += rowfix
       cell.colIndex += colfix
       return cell
     })
-    return objectCells
+    setActiveObject(movedObject)
   }
 
   const rotateObject = () => {
@@ -71,6 +73,7 @@ export default function Playground ({ gameState, getKeyCode, keyPressNumber }) {
         if (availableArr.some(result => result === false)) {
           console.log('stop')
         } else {
+          console.log('move')
           moveObject(activeObject, 0, -1)
         }
         break
@@ -85,6 +88,7 @@ export default function Playground ({ gameState, getKeyCode, keyPressNumber }) {
         if (availableArr.some(result => result === false)) {
           console.log('stop')
         } else {
+          console.log('move')
           moveObject(activeObject, 0, 1)
         }
         break
@@ -96,6 +100,7 @@ export default function Playground ({ gameState, getKeyCode, keyPressNumber }) {
         if (availableArr.some(result => result === false)) {
           console.log('stop')
         } else {
+          console.log('move')
           moveObject(activeObject, 1, 0)
         }
         break
@@ -187,7 +192,7 @@ export default function Playground ({ gameState, getKeyCode, keyPressNumber }) {
   //   cells.forEach()
   // }
 
-  const whenGameRunning = () => {
+  const whenGameRunning = useCallback(() => {
     const availableArr = activeObject.map(eachCell => {
       return checkIfTheNextSpotAvailable(eachCell, 'down')
     })
@@ -203,13 +208,13 @@ export default function Playground ({ gameState, getKeyCode, keyPressNumber }) {
       clearTimeout(gameInterval)
       setActiveObject(newActiveObject)
     }
-  }
+  }, [activeObject])
 
   const onGameStart = useCallback(() => {
     gameInterval = setTimeout(() => {
       whenGameRunning()
     }, 1000)
-  }, [gameState, activeObject])
+  }, [gameState, whenGameRunning])
 
   const onGameStop = useCallback(() => {
     // const newObject = _.cloneDeep(activeObject)

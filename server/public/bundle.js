@@ -1109,7 +1109,9 @@ var App = function App() {
     keyCode = _useState6[0],
     setKeyCode = _useState6[1];
   var keyDownHandler = function keyDownHandler(e) {
+    e.preventDefault();
     if (e) {
+      console.log(e.keyCode);
       setKeyPressNumber(keyPressNumber + 1);
       setKeyCode(e.keyCode);
     }
@@ -1213,12 +1215,14 @@ function Playground(_ref) {
     activeObject = _useState4[0],
     setActiveObject = _useState4[1];
   var moveObject = function moveObject(objectCells, rowfix, colfix) {
-    objectCells.map(function (cell) {
+    var objectCopy = lodash__WEBPACK_IMPORTED_MODULE_2___default().cloneDeep(objectCells);
+    clearTimeout(gameInterval);
+    var movedObject = objectCopy.map(function (cell) {
       cell.rowIndex += rowfix;
       cell.colIndex += colfix;
       return cell;
     });
-    return objectCells;
+    setActiveObject(movedObject);
   };
   var rotateObject = function rotateObject() {
     var centerSpot = lodash__WEBPACK_IMPORTED_MODULE_2___default().last(activeObject);
@@ -1280,6 +1284,7 @@ function Playground(_ref) {
         })) {
           console.log('stop');
         } else {
+          console.log('move');
           moveObject(activeObject, 0, -1);
         }
         break;
@@ -1296,6 +1301,7 @@ function Playground(_ref) {
         })) {
           console.log('stop');
         } else {
+          console.log('move');
           moveObject(activeObject, 0, 1);
         }
         break;
@@ -1309,6 +1315,7 @@ function Playground(_ref) {
         })) {
           console.log('stop');
         } else {
+          console.log('move');
           moveObject(activeObject, 1, 0);
         }
         break;
@@ -1418,7 +1425,7 @@ function Playground(_ref) {
   //   cells.forEach()
   // }
 
-  var whenGameRunning = function whenGameRunning() {
+  var whenGameRunning = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
     var availableArr = activeObject.map(function (eachCell) {
       return checkIfTheNextSpotAvailable(eachCell, 'down');
     });
@@ -1436,12 +1443,12 @@ function Playground(_ref) {
       clearTimeout(gameInterval);
       setActiveObject(newActiveObject);
     }
-  };
+  }, [activeObject]);
   var onGameStart = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
     gameInterval = setTimeout(function () {
       whenGameRunning();
     }, 1000);
-  }, [gameState, activeObject]);
+  }, [gameState, whenGameRunning]);
   var onGameStop = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
     // const newObject = _.cloneDeep(activeObject)
     // const pausedObject = newObject.map(spot => {
