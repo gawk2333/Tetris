@@ -1220,17 +1220,49 @@ function Playground(_ref) {
     });
     return objectCells;
   };
-
-  // const rotateObject = (objectCells) => {
-  //   const centerSpot = _.last(objectCells)
-  //   console.log(centerSpot)
-  //   const rotatedCells = objectCells.map(eachCell =>
-  //     // top or bottom
-  //     if(eachCell.rowIndex !== centerSpot.rowIndex && eachCell.colIndex === centerSpot.colIndex){
-  //     }
-  //     )
-  // }
-
+  var rotateObject = function rotateObject() {
+    var centerSpot = lodash__WEBPACK_IMPORTED_MODULE_2___default().last(activeObject);
+    var rotatedCells = activeObject.map(function (eachCell) {
+      var eachCellCopy = lodash__WEBPACK_IMPORTED_MODULE_2___default().cloneDeep(eachCell);
+      if (eachCell.rowIndex !== centerSpot.rowIndex && eachCell.colIndex === centerSpot.colIndex) {
+        eachCellCopy.rowIndex = centerSpot.rowIndex;
+        eachCellCopy.colIndex = centerSpot.colIndex + (eachCell.rowIndex - centerSpot.rowIndex);
+      } else if (eachCell.rowIndex === centerSpot.rowIndex && eachCell.colIndex !== centerSpot.colIndex) {
+        eachCellCopy.colIndex = centerSpot.colIndex;
+        eachCellCopy.rowIndex = centerSpot.rowIndex - (eachCell.colIndex - centerSpot.colIndex);
+      } else if (eachCell.rowIndex > centerSpot.rowIndex && eachCell.colIndex > centerSpot.colIndex || eachCell.rowIndex < centerSpot.rowIndex && eachCell.colIndex < centerSpot.colIndex) {
+        eachCellCopy.rowIndex = centerSpot.rowIndex - (eachCell.rowIndex - centerSpot.rowIndex);
+      } else if (eachCell.rowIndex > centerSpot.rowIndex && eachCell.colIndex < centerSpot.colIndex || eachCell.rowIndex < centerSpot.rowIndex && eachCell.colIndex > centerSpot.colIndex) {
+        eachCellCopy.colIndex = centerSpot.colIndex - (eachCell.colIndex - centerSpot.colIndex);
+      }
+      return eachCellCopy;
+    });
+    var results = rotatedCells.map(function (eachRotatedCell) {
+      var _cells$filter = cells.filter(function (cell) {
+          return cell.rowIndex === eachRotatedCell.rowIndex && cell.colIndex === eachRotatedCell.colIndex;
+        }),
+        _cells$filter2 = _slicedToArray(_cells$filter, 1),
+        nextCell = _cells$filter2[0];
+      if (!nextCell) {
+        return false;
+      }
+      if (nextCell && nextCell.hasDroped) {
+        return false;
+      }
+      if (eachRotatedCell.colIndex < 0) {
+        return false;
+      }
+      return true;
+    });
+    if (results.some(function (result) {
+      return result === false;
+    })) {
+      console.log('stop');
+    } else {
+      setActiveObject(rotatedCells);
+      clearTimeout(gameInterval);
+    }
+  };
   var onKeyCodeChanges = function onKeyCodeChanges() {
     var keyCode = getKeyCode();
     var newObject = lodash__WEBPACK_IMPORTED_MODULE_2___default().cloneDeep(activeObject);
@@ -1252,7 +1284,7 @@ function Playground(_ref) {
         }
         break;
       case 38:
-        // rotateObject(activeObject)
+        rotateObject();
         break;
       case 39:
         availableArr = newObject.map(function (eachCell) {
@@ -1310,11 +1342,11 @@ function Playground(_ref) {
       var nextSpot = _objectSpread(_objectSpread({}, spot), {}, {
         rowIndex: spot.rowIndex + 1
       });
-      var _cells$filter = cells.filter(function (cell) {
+      var _cells$filter3 = cells.filter(function (cell) {
           return cell.rowIndex === nextSpot.rowIndex && cell.colIndex === nextSpot.colIndex;
         }),
-        _cells$filter2 = _slicedToArray(_cells$filter, 1),
-        nextCell = _cells$filter2[0];
+        _cells$filter4 = _slicedToArray(_cells$filter3, 1),
+        nextCell = _cells$filter4[0];
       // console.log('next down', nextCell)
       if (nextCell && nextCell.hasDroped) {
         return false;
@@ -1328,11 +1360,11 @@ function Playground(_ref) {
       var _nextSpot = _objectSpread(_objectSpread({}, spot), {}, {
         colIndex: spot.colIndex + 1
       });
-      var _cells$filter3 = cells.filter(function (cell) {
+      var _cells$filter5 = cells.filter(function (cell) {
           return cell.rowIndex === _nextSpot.rowIndex && cell.colIndex === _nextSpot.colIndex;
         }),
-        _cells$filter4 = _slicedToArray(_cells$filter3, 1),
-        _nextCell = _cells$filter4[0];
+        _cells$filter6 = _slicedToArray(_cells$filter5, 1),
+        _nextCell = _cells$filter6[0];
       // if (!nextCell) { return false }
       if (_nextCell && _nextCell.hasDroped) {
         return false;
@@ -1346,11 +1378,11 @@ function Playground(_ref) {
       var _nextSpot2 = _objectSpread(_objectSpread({}, spot), {}, {
         colIndex: spot.colIndex - 1
       });
-      var _cells$filter5 = cells.filter(function (cell) {
+      var _cells$filter7 = cells.filter(function (cell) {
           return cell.rowIndex === _nextSpot2.rowIndex && cell.colIndex === _nextSpot2.colIndex;
         }),
-        _cells$filter6 = _slicedToArray(_cells$filter5, 1),
-        _nextCell2 = _cells$filter6[0];
+        _cells$filter8 = _slicedToArray(_cells$filter7, 1),
+        _nextCell2 = _cells$filter8[0];
       if (!_nextCell2) {
         return false;
       }
@@ -1381,26 +1413,33 @@ function Playground(_ref) {
       return a.rowIndex - b.rowIndex || a.colIndex - b.colIndex;
     }));
   };
+
+  // const checkClearableRows = () => {
+  //   cells.forEach()
+  // }
+
+  var whenGameRunning = function whenGameRunning() {
+    var availableArr = activeObject.map(function (eachCell) {
+      return checkIfTheNextSpotAvailable(eachCell, 'down');
+    });
+    if (availableArr.some(function (result) {
+      return result === false;
+    })) {
+      settleCurrentObject(activeObject);
+      clearTimeout(gameInterval);
+      setActiveObject((0,_utils_objectCreater__WEBPACK_IMPORTED_MODULE_1__["default"])());
+    } else {
+      var newActiveObject = activeObject.map(function (cell) {
+        cell.rowIndex++;
+        return cell;
+      });
+      clearTimeout(gameInterval);
+      setActiveObject(newActiveObject);
+    }
+  };
   var onGameStart = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
     gameInterval = setTimeout(function () {
-      var newObject = lodash__WEBPACK_IMPORTED_MODULE_2___default().cloneDeep(activeObject);
-      var availableArr = newObject.map(function (eachCell) {
-        return checkIfTheNextSpotAvailable(eachCell, 'down');
-      });
-      if (availableArr.some(function (result) {
-        return result === false;
-      })) {
-        settleCurrentObject(activeObject);
-        clearTimeout(gameInterval);
-        setActiveObject((0,_utils_objectCreater__WEBPACK_IMPORTED_MODULE_1__["default"])());
-      } else {
-        var newActiveObject = newObject.map(function (cell) {
-          cell.rowIndex++;
-          return cell;
-        });
-        clearTimeout(gameInterval);
-        setActiveObject(newActiveObject);
-      }
+      whenGameRunning();
     }, 1000);
   }, [gameState, activeObject]);
   var onGameStop = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
@@ -1434,7 +1473,7 @@ function Playground(_ref) {
           backgroundColor: activeCell.color
         },
         key: "".concat(cell.rowIndex, "-").concat(cell.colIndex)
-      });
+      }, "row:", cell.rowIndex, " col:", cell.colIndex);
     } else {
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
         className: "cell",
@@ -1549,7 +1588,7 @@ var createActiveObject = function createActiveObject() {
       positions = ['top', 'topright', 'left'];
       break;
     case 'T':
-      positions = ['topleft', 'top', 'topright'];
+      positions = ['left', 'right', 'top'];
       break;
     case 'Z':
       positions = ['topleft', 'top', 'right'];

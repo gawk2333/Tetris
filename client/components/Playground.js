@@ -20,15 +20,41 @@ export default function Playground ({ gameState, getKeyCode, keyPressNumber }) {
     return objectCells
   }
 
-  // const rotateObject = (objectCells) => {
-  //   const centerSpot = _.last(objectCells)
-  //   console.log(centerSpot)
-  //   const rotatedCells = objectCells.map(eachCell =>
-  //     // top or bottom
-  //     if(eachCell.rowIndex !== centerSpot.rowIndex && eachCell.colIndex === centerSpot.colIndex){
-  //     }
-  //     )
-  // }
+  const rotateObject = () => {
+    const centerSpot = _.last(activeObject)
+    const rotatedCells = activeObject.map(eachCell => {
+      const eachCellCopy = _.cloneDeep(eachCell)
+      if (eachCell.rowIndex !== centerSpot.rowIndex && eachCell.colIndex === centerSpot.colIndex) {
+        eachCellCopy.rowIndex = centerSpot.rowIndex
+        eachCellCopy.colIndex = centerSpot.colIndex + (eachCell.rowIndex - centerSpot.rowIndex)
+      } else if (eachCell.rowIndex === centerSpot.rowIndex && eachCell.colIndex !== centerSpot.colIndex) {
+        eachCellCopy.colIndex = centerSpot.colIndex
+        eachCellCopy.rowIndex = centerSpot.rowIndex - (eachCell.colIndex - centerSpot.colIndex)
+      } else if ((eachCell.rowIndex > centerSpot.rowIndex && eachCell.colIndex > centerSpot.colIndex) ||
+      (eachCell.rowIndex < centerSpot.rowIndex && eachCell.colIndex < centerSpot.colIndex)) {
+        eachCellCopy.rowIndex = centerSpot.rowIndex - (eachCell.rowIndex - centerSpot.rowIndex)
+      } else if ((eachCell.rowIndex > centerSpot.rowIndex && eachCell.colIndex < centerSpot.colIndex) ||
+      (eachCell.rowIndex < centerSpot.rowIndex && eachCell.colIndex > centerSpot.colIndex)) {
+        eachCellCopy.colIndex = centerSpot.colIndex - (eachCell.colIndex - centerSpot.colIndex)
+      }
+      return eachCellCopy
+    })
+    const results = rotatedCells.map(eachRotatedCell => {
+      const [nextCell] = cells.filter(cell => cell.rowIndex === eachRotatedCell.rowIndex && cell.colIndex === eachRotatedCell.colIndex)
+      if (!nextCell) { return false }
+      if (nextCell && nextCell.hasDroped) {
+        return false
+      }
+      if (eachRotatedCell.colIndex < 0) { return false }
+      return true
+    })
+    if (results.some(result => result === false)) {
+      console.log('stop')
+    } else {
+      setActiveObject(rotatedCells)
+      clearTimeout(gameInterval)
+    }
+  }
 
   const onKeyCodeChanges = () => {
     const keyCode = getKeyCode()
@@ -49,7 +75,7 @@ export default function Playground ({ gameState, getKeyCode, keyPressNumber }) {
         }
         break
       case 38:
-        // rotateObject(activeObject)
+        rotateObject()
         break
       case 39:
         availableArr = newObject.map(eachCell => {
@@ -157,24 +183,31 @@ export default function Playground ({ gameState, getKeyCode, keyPressNumber }) {
     setCells(combinedCells.sort((a, b) => a.rowIndex - b.rowIndex || a.colIndex - b.colIndex))
   }
 
+  // const checkClearableRows = () => {
+  //   cells.forEach()
+  // }
+
+  const whenGameRunning = () => {
+    const availableArr = activeObject.map(eachCell => {
+      return checkIfTheNextSpotAvailable(eachCell, 'down')
+    })
+    if (availableArr.some(result => result === false)) {
+      settleCurrentObject(activeObject)
+      clearTimeout(gameInterval)
+      setActiveObject(createActiveObject())
+    } else {
+      const newActiveObject = activeObject.map(cell => {
+        cell.rowIndex++
+        return cell
+      })
+      clearTimeout(gameInterval)
+      setActiveObject(newActiveObject)
+    }
+  }
+
   const onGameStart = useCallback(() => {
     gameInterval = setTimeout(() => {
-      const newObject = _.cloneDeep(activeObject)
-      const availableArr = newObject.map(eachCell => {
-        return checkIfTheNextSpotAvailable(eachCell, 'down')
-      })
-      if (availableArr.some(result => result === false)) {
-        settleCurrentObject(activeObject)
-        clearTimeout(gameInterval)
-        setActiveObject(createActiveObject())
-      } else {
-        const newActiveObject = newObject.map(cell => {
-          cell.rowIndex++
-          return cell
-        })
-        clearTimeout(gameInterval)
-        setActiveObject(newActiveObject)
-      }
+      whenGameRunning()
     }, 1000)
   }, [gameState, activeObject])
 
@@ -198,7 +231,7 @@ export default function Playground ({ gameState, getKeyCode, keyPressNumber }) {
     {cells.length && cells.map(cell => {
       if (activeObject.some(objcell => objcell.rowIndex === cell.rowIndex && objcell.colIndex === cell.colIndex)) {
         const [activeCell] = activeObject.filter(objcell => objcell.rowIndex === cell.rowIndex && objcell.colIndex === cell.colIndex)
-        return (<div className='cell' style={{ backgroundColor: activeCell.color }} key={`${cell.rowIndex}-${cell.colIndex}`}></div>)
+        return (<div className='cell' style={{ backgroundColor: activeCell.color }} key={`${cell.rowIndex}-${cell.colIndex}`}>row:{cell.rowIndex} col:{cell.colIndex}</div>)
       } else {
         return (<div className='cell' style={{ backgroundColor: cell.color }} key={`${cell.rowIndex}-${cell.colIndex}`}></div>)
       }

@@ -86,7 +86,7 @@ const createActiveObject = () => {
       positions = ['top', 'topright', 'left']
       break
     case 'T':
-      positions = ['topleft', 'top', 'topright']
+      positions = ['left', 'right', 'top']
       break
     case 'Z':
       positions = ['topleft', 'top', 'right']
