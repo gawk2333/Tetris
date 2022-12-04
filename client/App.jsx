@@ -11,7 +11,6 @@ const App = () => {
   const keyDownHandler = (e) => {
     e.preventDefault()
     if (e) {
-      console.log(e.keyCode)
       setKeyPressNumber(keyPressNumber + 1)
       setKeyCode(e.keyCode)
     }

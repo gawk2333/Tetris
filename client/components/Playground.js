@@ -10,6 +10,7 @@ const activeCellSpots = createActiveObject()
 export default function Playground ({ gameState, getKeyCode, keyPressNumber }) {
   const [cells, setCells] = useState([])
   const [activeObject, setActiveObject] = useState(activeCellSpots)
+  const [objectCreaterToggle, setObjectCreaterToggle] = useState(false)
 
   const moveObject = (objectCells, rowfix, colfix) => {
     const objectCopy = _.cloneDeep(objectCells)
@@ -73,7 +74,6 @@ export default function Playground ({ gameState, getKeyCode, keyPressNumber }) {
         if (availableArr.some(result => result === false)) {
           console.log('stop')
         } else {
-          console.log('move')
           moveObject(activeObject, 0, -1)
         }
         break
@@ -88,7 +88,6 @@ export default function Playground ({ gameState, getKeyCode, keyPressNumber }) {
         if (availableArr.some(result => result === false)) {
           console.log('stop')
         } else {
-          console.log('move')
           moveObject(activeObject, 0, 1)
         }
         break
@@ -100,7 +99,6 @@ export default function Playground ({ gameState, getKeyCode, keyPressNumber }) {
         if (availableArr.some(result => result === false)) {
           console.log('stop')
         } else {
-          console.log('move')
           moveObject(activeObject, 1, 0)
         }
         break
@@ -131,6 +129,48 @@ export default function Playground ({ gameState, getKeyCode, keyPressNumber }) {
     onKeyCodeChanges()
   }, [keyPressNumber])
 
+  const checkClearableRows = useCallback(() => {
+    const cellsCopy = _.cloneDeep(cells)
+    const settledCells = cellsCopy.filter(cell => cell.hasDroped === true)
+    let clearableRowNumber = 0
+    for (let rowIndex = 1; rowIndex <= rowNumber; rowIndex++) {
+      const eachRowCells = settledCells.filter(cell =>
+        cell.rowIndex === rowIndex
+      )
+      if (eachRowCells.length === colNumber) {
+        if (cellsCopy.some(cell => cell.rowIndex < rowIndex)) {
+          const dropedCells = cellsCopy.map(cell => {
+            if (cell.rowIndex < rowIndex) {
+              cell.rowIndex++
+            } else if (cell.rowIndex === rowIndex) {
+              cell.rowIndex = 1
+              cell.color = 'white'
+              cell.active = false
+              cell.hasDroped = false
+            }
+            return cell
+          })
+          setCells(dropedCells.sort((a, b) => a.rowIndex - b.rowIndex ||
+          a.colIndex - b.colIndex))
+        }
+        clearableRowNumber++
+      }
+      console.log(clearableRowNumber)
+    }
+  }, [cells])
+
+  useEffect(() => {
+    checkClearableRows()
+    setActiveObject(createActiveObject())
+  }, [checkClearableRows])
+
+  // useEffect(() => {
+  //   if (objectCreaterToggle) {
+  //     setActiveObject(createActiveObject())
+  //     setObjectCreaterToggle(false)
+  //   }
+  // }, [objectCreaterToggle])
+
   const checkIfTheNextSpotAvailable = (spot, direction) => {
     if (direction === 'down') {
       const nextSpot = {
@@ -142,7 +182,9 @@ export default function Playground ({ gameState, getKeyCode, keyPressNumber }) {
       if (nextCell && nextCell.hasDroped) {
         return false
       }
-      if (nextSpot.rowIndex > rowNumber) { return false }
+      if (nextSpot.rowIndex > rowNumber) {
+        return false
+      }
       return true
     }
     if (direction === 'right') {
@@ -173,33 +215,31 @@ export default function Playground ({ gameState, getKeyCode, keyPressNumber }) {
     }
   }
 
-  const settleCurrentObject = (objectCells) => {
-    const currentObject = objectCells.map(cell => {
-      cell.active = false
-      cell.hasDroped = true
-      return cell
-    })
+  const settleCurrentObject = () => {
+    const currentObject = activeObject.filter(objectCell => 
+      cells.some(cell => cell.rowIndex === objectCell.rowIndex && cell.colIndex === objectCell.colIndex))
+      .map(cell => {
+        cell.active = false
+        cell.hasDroped = true
+        return cell
+      })
     const filteredCells = cells
       .filter(cell => !currentObject.some(objectcell => objectcell.rowIndex === cell.rowIndex && objectcell.colIndex === cell.colIndex))
     // console.log('filtered1', filteredCells)
     const combinedCells = filteredCells
       .concat(currentObject)
     // console.log('filtered2', filteredCells)
-    setCells(combinedCells.sort((a, b) => a.rowIndex - b.rowIndex || a.colIndex - b.colIndex))
+    setCells(combinedCells.sort((a, b) => a.rowIndex - b.rowIndex ||
+    a.colIndex - b.colIndex))
   }
-
-  // const checkClearableRows = () => {
-  //   cells.forEach()
-  // }
 
   const whenGameRunning = useCallback(() => {
     const availableArr = activeObject.map(eachCell => {
       return checkIfTheNextSpotAvailable(eachCell, 'down')
     })
     if (availableArr.some(result => result === false)) {
-      settleCurrentObject(activeObject)
       clearTimeout(gameInterval)
-      setActiveObject(createActiveObject())
+      settleCurrentObject()
     } else {
       const newActiveObject = activeObject.map(cell => {
         cell.rowIndex++
@@ -207,6 +247,7 @@ export default function Playground ({ gameState, getKeyCode, keyPressNumber }) {
       })
       clearTimeout(gameInterval)
       setActiveObject(newActiveObject)
+      console.log('233')
     }
   }, [activeObject])
 
