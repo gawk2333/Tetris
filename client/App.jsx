@@ -25,6 +25,7 @@ const App = () => {
       <HeaderPannel gameState={gameState}
         setGameState={setGameState} />
       <Playground gameState = {gameState}
+        setGameState={setGameState}
         getKeyCode={getKeyCode}
         keyPressNumber={keyPressNumber}/>
     </div>

@@ -7,10 +7,9 @@ const colNumber = 10
 let gameInterval
 const activeCellSpots = createActiveObject()
 
-export default function Playground ({ gameState, getKeyCode, keyPressNumber }) {
+export default function Playground ({ gameState, setGameState, getKeyCode, keyPressNumber }) {
   const [cells, setCells] = useState([])
   const [activeObject, setActiveObject] = useState(activeCellSpots)
-  const [objectCreaterToggle, setObjectCreaterToggle] = useState(false)
 
   const moveObject = (objectCells, rowfix, colfix) => {
     const objectCopy = _.cloneDeep(objectCells)
@@ -59,51 +58,6 @@ export default function Playground ({ gameState, getKeyCode, keyPressNumber }) {
     }
   }
 
-  const onKeyCodeChanges = () => {
-    const keyCode = getKeyCode()
-    const newObject = _.cloneDeep(activeObject)
-    let availableArr
-    switch (keyCode) {
-      default:
-        break
-      case 37:
-        availableArr = newObject.map(eachCell => {
-          return checkIfTheNextSpotAvailable(eachCell, 'left')
-        })
-        // console.log('new', availableArr)
-        if (availableArr.some(result => result === false)) {
-          console.log('stop')
-        } else {
-          moveObject(activeObject, 0, -1)
-        }
-        break
-      case 38:
-        rotateObject()
-        break
-      case 39:
-        availableArr = newObject.map(eachCell => {
-          return checkIfTheNextSpotAvailable(eachCell, 'right')
-        })
-        // console.log('new', availableArr)
-        if (availableArr.some(result => result === false)) {
-          console.log('stop')
-        } else {
-          moveObject(activeObject, 0, 1)
-        }
-        break
-      case 40:
-        availableArr = newObject.map(eachCell => {
-          return checkIfTheNextSpotAvailable(eachCell, 'down')
-        })
-        // console.log('new', availableArr)
-        if (availableArr.some(result => result === false)) {
-          console.log('stop')
-        } else {
-          moveObject(activeObject, 1, 0)
-        }
-        break
-    }
-  }
   // initialize
   useEffect(() => {
     const createCells = () => {
@@ -125,7 +79,53 @@ export default function Playground ({ gameState, getKeyCode, keyPressNumber }) {
     createCells()
   }, [])
 
+  // keydown actions
   useEffect(() => {
+    const onKeyCodeChanges = () => {
+      const keyCode = getKeyCode()
+      const newObject = _.cloneDeep(activeObject)
+      let availableArr
+      switch (keyCode) {
+        default:
+          break
+        case 37:
+          availableArr = newObject.map(eachCell => {
+            return checkIfTheNextSpotAvailable(eachCell, 'left')
+          })
+          // console.log('new', availableArr)
+          if (availableArr.some(result => result === false)) {
+            console.log('stop')
+          } else {
+            moveObject(activeObject, 0, -1)
+          }
+          break
+        case 38:
+          rotateObject()
+          break
+        case 39:
+          availableArr = newObject.map(eachCell => {
+            return checkIfTheNextSpotAvailable(eachCell, 'right')
+          })
+          // console.log('new', availableArr)
+          if (availableArr.some(result => result === false)) {
+            console.log('stop')
+          } else {
+            moveObject(activeObject, 0, 1)
+          }
+          break
+        case 40:
+          availableArr = newObject.map(eachCell => {
+            return checkIfTheNextSpotAvailable(eachCell, 'down')
+          })
+          // console.log('new', availableArr)
+          if (availableArr.some(result => result === false)) {
+            console.log('stop')
+          } else {
+            moveObject(activeObject, 1, 0)
+          }
+          break
+      }
+    }
     onKeyCodeChanges()
   }, [keyPressNumber])
 
@@ -206,23 +206,28 @@ export default function Playground ({ gameState, getKeyCode, keyPressNumber }) {
         colIndex: spot.colIndex - 1
       }
       const [nextCell] = cells.filter(cell => cell.rowIndex === nextSpot.rowIndex && cell.colIndex === nextSpot.colIndex)
-      if (!nextCell) { return false }
+      // if (!nextCell) { return false }
       if (nextCell && nextCell.hasDroped) {
         return false
       }
-      if (nextSpot.colIndex < 0) { return false }
+      if (nextSpot.colIndex < 1) { return false }
       return true
     }
   }
 
   const settleCurrentObject = () => {
-    const currentObject = activeObject.filter(objectCell => 
+    const currentObject = activeObject.filter(objectCell =>
       cells.some(cell => cell.rowIndex === objectCell.rowIndex && cell.colIndex === objectCell.colIndex))
       .map(cell => {
         cell.active = false
         cell.hasDroped = true
         return cell
       })
+
+    if (currentObject.length < 4) {
+      setGameState('game over')
+    }
+
     const filteredCells = cells
       .filter(cell => !currentObject.some(objectcell => objectcell.rowIndex === cell.rowIndex && objectcell.colIndex === cell.colIndex))
     // console.log('filtered1', filteredCells)
@@ -247,7 +252,6 @@ export default function Playground ({ gameState, getKeyCode, keyPressNumber }) {
       })
       clearTimeout(gameInterval)
       setActiveObject(newActiveObject)
-      console.log('233')
     }
   }, [activeObject])
 
@@ -277,7 +281,7 @@ export default function Playground ({ gameState, getKeyCode, keyPressNumber }) {
     {cells.length && cells.map(cell => {
       if (activeObject.some(objcell => objcell.rowIndex === cell.rowIndex && objcell.colIndex === cell.colIndex)) {
         const [activeCell] = activeObject.filter(objcell => objcell.rowIndex === cell.rowIndex && objcell.colIndex === cell.colIndex)
-        return (<div className='cell' style={{ backgroundColor: activeCell.color }} key={`${cell.rowIndex}-${cell.colIndex}`}>row:{cell.rowIndex} col:{cell.colIndex}</div>)
+        return (<div className='cell' style={{ backgroundColor: activeCell.color }} key={`${cell.rowIndex}-${cell.colIndex}`}></div>)
       } else {
         return (<div className='cell' style={{ backgroundColor: cell.color }} key={`${cell.rowIndex}-${cell.colIndex}`}></div>)
       }

@@ -1125,6 +1125,7 @@ var App = function App() {
     setGameState: setGameState
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_components_Playground__WEBPACK_IMPORTED_MODULE_1__["default"], {
     gameState: gameState,
+    setGameState: setGameState,
     getKeyCode: getKeyCode,
     keyPressNumber: keyPressNumber
   }));
@@ -1203,6 +1204,7 @@ var gameInterval;
 var activeCellSpots = (0,_utils_objectCreater__WEBPACK_IMPORTED_MODULE_1__["default"])();
 function Playground(_ref) {
   var gameState = _ref.gameState,
+    setGameState = _ref.setGameState,
     getKeyCode = _ref.getKeyCode,
     keyPressNumber = _ref.keyPressNumber;
   var _useState = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)([]),
@@ -1213,10 +1215,6 @@ function Playground(_ref) {
     _useState4 = _slicedToArray(_useState3, 2),
     activeObject = _useState4[0],
     setActiveObject = _useState4[1];
-  var _useState5 = (0,react__WEBPACK_IMPORTED_MODULE_0__.useState)(false),
-    _useState6 = _slicedToArray(_useState5, 2),
-    objectCreaterToggle = _useState6[0],
-    setObjectCreaterToggle = _useState6[1];
   var moveObject = function moveObject(objectCells, rowfix, colfix) {
     var objectCopy = lodash__WEBPACK_IMPORTED_MODULE_2___default().cloneDeep(objectCells);
     clearTimeout(gameInterval);
@@ -1270,57 +1268,7 @@ function Playground(_ref) {
       clearTimeout(gameInterval);
     }
   };
-  var onKeyCodeChanges = function onKeyCodeChanges() {
-    var keyCode = getKeyCode();
-    var newObject = lodash__WEBPACK_IMPORTED_MODULE_2___default().cloneDeep(activeObject);
-    var availableArr;
-    switch (keyCode) {
-      default:
-        break;
-      case 37:
-        availableArr = newObject.map(function (eachCell) {
-          return checkIfTheNextSpotAvailable(eachCell, 'left');
-        });
-        // console.log('new', availableArr)
-        if (availableArr.some(function (result) {
-          return result === false;
-        })) {
-          console.log('stop');
-        } else {
-          moveObject(activeObject, 0, -1);
-        }
-        break;
-      case 38:
-        rotateObject();
-        break;
-      case 39:
-        availableArr = newObject.map(function (eachCell) {
-          return checkIfTheNextSpotAvailable(eachCell, 'right');
-        });
-        // console.log('new', availableArr)
-        if (availableArr.some(function (result) {
-          return result === false;
-        })) {
-          console.log('stop');
-        } else {
-          moveObject(activeObject, 0, 1);
-        }
-        break;
-      case 40:
-        availableArr = newObject.map(function (eachCell) {
-          return checkIfTheNextSpotAvailable(eachCell, 'down');
-        });
-        // console.log('new', availableArr)
-        if (availableArr.some(function (result) {
-          return result === false;
-        })) {
-          console.log('stop');
-        } else {
-          moveObject(activeObject, 1, 0);
-        }
-        break;
-    }
-  };
+
   // initialize
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
     var createCells = function createCells() {
@@ -1341,7 +1289,60 @@ function Playground(_ref) {
     };
     createCells();
   }, []);
+
+  // keydown actions
   (0,react__WEBPACK_IMPORTED_MODULE_0__.useEffect)(function () {
+    var onKeyCodeChanges = function onKeyCodeChanges() {
+      var keyCode = getKeyCode();
+      var newObject = lodash__WEBPACK_IMPORTED_MODULE_2___default().cloneDeep(activeObject);
+      var availableArr;
+      switch (keyCode) {
+        default:
+          break;
+        case 37:
+          availableArr = newObject.map(function (eachCell) {
+            return checkIfTheNextSpotAvailable(eachCell, 'left');
+          });
+          // console.log('new', availableArr)
+          if (availableArr.some(function (result) {
+            return result === false;
+          })) {
+            console.log('stop');
+          } else {
+            moveObject(activeObject, 0, -1);
+          }
+          break;
+        case 38:
+          rotateObject();
+          break;
+        case 39:
+          availableArr = newObject.map(function (eachCell) {
+            return checkIfTheNextSpotAvailable(eachCell, 'right');
+          });
+          // console.log('new', availableArr)
+          if (availableArr.some(function (result) {
+            return result === false;
+          })) {
+            console.log('stop');
+          } else {
+            moveObject(activeObject, 0, 1);
+          }
+          break;
+        case 40:
+          availableArr = newObject.map(function (eachCell) {
+            return checkIfTheNextSpotAvailable(eachCell, 'down');
+          });
+          // console.log('new', availableArr)
+          if (availableArr.some(function (result) {
+            return result === false;
+          })) {
+            console.log('stop');
+          } else {
+            moveObject(activeObject, 1, 0);
+          }
+          break;
+      }
+    };
     onKeyCodeChanges();
   }, [keyPressNumber]);
   var checkClearableRows = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
@@ -1439,13 +1440,11 @@ function Playground(_ref) {
         }),
         _cells$filter8 = _slicedToArray(_cells$filter7, 1),
         _nextCell2 = _cells$filter8[0];
-      if (!_nextCell2) {
-        return false;
-      }
+      // if (!nextCell) { return false }
       if (_nextCell2 && _nextCell2.hasDroped) {
         return false;
       }
-      if (_nextSpot2.colIndex < 0) {
+      if (_nextSpot2.colIndex < 1) {
         return false;
       }
       return true;
@@ -1461,6 +1460,9 @@ function Playground(_ref) {
       cell.hasDroped = true;
       return cell;
     });
+    if (currentObject.length < 4) {
+      setGameState('game over');
+    }
     var filteredCells = cells.filter(function (cell) {
       return !currentObject.some(function (objectcell) {
         return objectcell.rowIndex === cell.rowIndex && objectcell.colIndex === cell.colIndex;
@@ -1489,7 +1491,6 @@ function Playground(_ref) {
       });
       clearTimeout(gameInterval);
       setActiveObject(newActiveObject);
-      console.log('233');
     }
   }, [activeObject]);
   var onGameStart = (0,react__WEBPACK_IMPORTED_MODULE_0__.useCallback)(function () {
@@ -1528,7 +1529,7 @@ function Playground(_ref) {
           backgroundColor: activeCell.color
         },
         key: "".concat(cell.rowIndex, "-").concat(cell.colIndex)
-      }, "row:", cell.rowIndex, " col:", cell.colIndex);
+      });
     } else {
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", {
         className: "cell",

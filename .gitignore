@@ -1,4 +1,21 @@
+# Node modules
 node_modules
+
+# Logs
+*.log
+
+# Webpack bundle
+/public/bundle.js
+/public/bundle.js.map
+
+# Generated css
+public/styles.css
+public/styles.css.map
+
+# Jest coverage report
+coverage/*
+
+# Dotenv env settings
+.env
+
 .DS_Store
-server/public/bundle.js
-server/public/bundle.js.map
