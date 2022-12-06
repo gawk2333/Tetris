@@ -67,7 +67,6 @@ export default function Playground ({ gameState, setGameState, getKeyCode, keyPr
           const newCell = {
             rowIndex: i,
             colIndex: j,
-            color: 'white',
             active: false,
             hasDroped: false
           }
@@ -143,8 +142,9 @@ export default function Playground ({ gameState, setGameState, getKeyCode, keyPr
             if (cell.rowIndex < rowIndex) {
               cell.rowIndex++
             } else if (cell.rowIndex === rowIndex) {
+              delete cell.color
               cell.rowIndex = 1
-              cell.color = 'white'
+              cell.border = null
               cell.active = false
               cell.hasDroped = false
             }
@@ -219,7 +219,8 @@ export default function Playground ({ gameState, setGameState, getKeyCode, keyPr
 
   const settleCurrentObject = () => {
     const currentObject = activeObject.filter(objectCell =>
-      cells.some(cell => cell.rowIndex === objectCell.rowIndex && cell.colIndex === objectCell.colIndex))
+      cells.some(cell => cell.rowIndex === objectCell.rowIndex &&
+        cell.colIndex === objectCell.colIndex))
       .map(cell => {
         cell.active = false
         cell.hasDroped = true
@@ -231,7 +232,9 @@ export default function Playground ({ gameState, setGameState, getKeyCode, keyPr
     }
 
     const filteredCells = cells
-      .filter(cell => !currentObject.some(objectcell => objectcell.rowIndex === cell.rowIndex && objectcell.colIndex === cell.colIndex))
+      .filter(cell => !currentObject.some(objectcell =>
+        objectcell.rowIndex === cell.rowIndex &&
+        objectcell.colIndex === cell.colIndex))
     // console.log('filtered1', filteredCells)
     const combinedCells = filteredCells
       .concat(currentObject)
@@ -283,9 +286,9 @@ export default function Playground ({ gameState, setGameState, getKeyCode, keyPr
     {cells.length && cells.map(cell => {
       if (activeObject.some(objcell => objcell.rowIndex === cell.rowIndex && objcell.colIndex === cell.colIndex)) {
         const [activeCell] = activeObject.filter(objcell => objcell.rowIndex === cell.rowIndex && objcell.colIndex === cell.colIndex)
-        return (<div className='cell' style={{ backgroundColor: activeCell.color }} key={`${cell.rowIndex}-${cell.colIndex}`}></div>)
+        return (<div className='cell' style={{ backgroundColor: activeCell.color, border: activeCell.border }} key={`${cell.rowIndex}-${cell.colIndex}`}></div>)
       } else {
-        return (<div className='cell' style={{ backgroundColor: cell.color }} key={`${cell.rowIndex}-${cell.colIndex}`}></div>)
+        return (<div className='cell' style={{ backgroundColor: cell.color, border: cell.border }} key={`${cell.rowIndex}-${cell.colIndex}`}></div>)
       }
     })}
   </div>)

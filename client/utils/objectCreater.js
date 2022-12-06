@@ -1,13 +1,16 @@
 import _ from 'lodash'
 
-const colors = ['red', 'blue', 'green', 'yellow', 'orange', 'brown', 'green', 'grey', 'black', 'purple', 'red']
 const shapes = ['I', 'J', 'L', 'O', 'S', 'T', 'Z']
 
 const createActiveCellSpot = () => {
+  const getRandomColor = () => {
+    return `rgb(${parseInt(Math.random() * 255)},${parseInt(Math.random() * 255)},${parseInt(Math.random() * 255)})`
+  }
   const newActiveCellSpot = {
     rowIndex: 0,
     colIndex: parseInt(Math.random() * 4 + 4), // colIndex needs to be between 3 to 7
-    color: colors[parseInt(Math.random() * 10)],
+    color: getRandomColor(),
+    border: `2px inset ${getRandomColor()}`,
     active: true,
     hasDroped: false
   }
