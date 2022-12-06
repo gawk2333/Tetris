@@ -1,12 +1,23 @@
 import React from 'react'
-import { Button } from 'semantic-ui-react'
+import { Button, Label } from 'semantic-ui-react'
 
-export default function HeaderPannel ({ gameState, setGameState }) {
+export default function HeaderPannel ({
+  gameState,
+  setGameState,
+  score
+}) {
   return (
     <div className='headerpannel'>
       {gameState === 'ready'
-        ? (<Button primary style={{ margin: '0 auto' }} onClick={() => setGameState('started')}>Start</Button>)
-        : (<Button secondary style={{ margin: '0 auto' }} onClick={() => setGameState('ready')}>Pause</Button>)}
+        ? (<Button primary onClick={() => setGameState('started')}>Start</Button>)
+        : (<Button secondary onClick={() => setGameState('ready')}>Pause</Button>)}
+      <Label style={{
+        float: 'right',
+        height: 37,
+        paddingTop: 10
+      }}>
+        Score:{score}
+      </Label>
     </div>
   )
 }

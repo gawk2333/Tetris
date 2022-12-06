@@ -7,7 +7,7 @@ const colNumber = 10
 let gameInterval
 const activeCellSpots = createActiveObject()
 
-export default function Playground ({ gameState, setGameState, getKeyCode, keyPressNumber }) {
+export default function Playground ({ gameState, setGameState, score, setScore, getKeyCode, keyPressNumber }) {
   const [cells, setCells] = useState([])
   const [activeObject, setActiveObject] = useState(activeCellSpots)
 
@@ -159,6 +159,11 @@ export default function Playground ({ gameState, setGameState, getKeyCode, keyPr
         clearableRowNumber++
       }
     }
+
+    if (clearableRowNumber !== 0) {
+      setScore(score + clearableRowNumber * 100)
+    }
+
     if (clearableRowNumber === 0) {
       setActiveObject(createActiveObject())
       console.log('create')
@@ -285,7 +290,9 @@ export default function Playground ({ gameState, setGameState, getKeyCode, keyPr
     }
   }, [onGameStart, onGameStop])
 
-  return (<div className='playground'>
+  const playgroundStyle = (gameState === 'started') ? null : { filter: 'grayscale(1)' }
+
+  return (<div className='playground' style={ playgroundStyle }>
     {cells.length && cells.map(cell => {
       if (activeObject.some(objcell => objcell.rowIndex === cell.rowIndex && objcell.colIndex === cell.colIndex)) {
         const [activeCell] = activeObject.filter(objcell => objcell.rowIndex === cell.rowIndex && objcell.colIndex === cell.colIndex)

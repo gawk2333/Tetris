@@ -7,6 +7,7 @@ const App = () => {
   const [gameState, setGameState] = useState('ready')
   const [keyPressNumber, setKeyPressNumber] = useState(0)
   const [keyCode, setKeyCode] = useState(null)
+  const [score, setScore] = useState(0)
 
   const keyDownHandler = (e) => {
     e.preventDefault()
@@ -23,9 +24,12 @@ const App = () => {
   return (
     <div onKeyDown={keyDownHandler}>
       <HeaderPannel gameState={gameState}
-        setGameState={setGameState} />
+        setGameState={setGameState}
+        score = {score} />
       <Playground gameState = {gameState}
         setGameState={setGameState}
+        score={score}
+        setScore={setScore}
         getKeyCode={getKeyCode}
         keyPressNumber={keyPressNumber}/>
     </div>
