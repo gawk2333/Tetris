@@ -3,10 +3,10 @@ import { Button } from 'semantic-ui-react'
 
 export default function HeaderPannel ({ gameState, setGameState }) {
   return (
-    <div style={{ margin: '0 auto' }}>
+    <div className='headerpannel'>
       {gameState === 'ready'
-        ? (<Button primary onClick={() => setGameState('started')}>Start</Button>)
-        : (<Button secondary onClick={() => setGameState('ready')}>Pause</Button>)}
+        ? (<Button primary style={{ margin: '0 auto' }} onClick={() => setGameState('started')}>Start</Button>)
+        : (<Button secondary style={{ margin: '0 auto' }} onClick={() => setGameState('ready')}>Pause</Button>)}
     </div>
   )
 }

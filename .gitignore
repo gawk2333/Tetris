@@ -5,8 +5,8 @@ node_modules
 *.log
 
 # Webpack bundle
-/public/bundle.js
-/public/bundle.js.map
+server/public/bundle.js
+server/public/bundle.js.map
 
 # Generated css
 public/styles.css

@@ -1,5 +1,5 @@
 body{
-  background-color: aqua;
+  background-color: aqua !important;
 }
 
 .playground {
@@ -12,7 +12,12 @@ body{
 }
 
 .cell {
-  width: 48px;
-  height: 48px;
+  width: 50px;
+  height: 50px;
   border: 1px solid black;
+}
+
+.headerpannel {
+  width:500px;
+  margin:0 auto;
 }

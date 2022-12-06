@@ -155,13 +155,15 @@ export default function Playground ({ gameState, setGameState, getKeyCode, keyPr
         }
         clearableRowNumber++
       }
-      console.log(clearableRowNumber)
+    }
+    if (clearableRowNumber === 0) {
+      setActiveObject(createActiveObject())
+      console.log('create')
     }
   }, [cells])
 
   useEffect(() => {
     checkClearableRows()
-    setActiveObject(createActiveObject())
   }, [checkClearableRows])
 
   // useEffect(() => {
