@@ -60,8 +60,9 @@ const createOtherCellSpots = (centerSpot, newSpotPosition) => {
   return newSpot
 }
 
-const createCellSpotsArray = (spot, positions) => {
+const createCellSpotsArray = (spot, positions, shape) => {
   const cellSpotsArray = positions.map(position => createOtherCellSpots(spot, position))
+  spot.shape = shape
   cellSpotsArray.push(spot)
   return cellSpotsArray
 }
@@ -95,7 +96,7 @@ const createActiveObject = () => {
       positions = ['topleft', 'top', 'right']
       break
   }
-  return createCellSpotsArray(spot, positions)
+  return createCellSpotsArray(spot, positions, shape)
 }
 
 export default createActiveObject

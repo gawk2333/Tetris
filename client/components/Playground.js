@@ -24,6 +24,9 @@ export default function Playground ({ gameState, setGameState, getKeyCode, keyPr
 
   const rotateObject = () => {
     const centerSpot = _.last(activeObject)
+    if (centerSpot.shape === 'O') {
+      return activeObject
+    }
     const rotatedCells = activeObject.map(eachCell => {
       const eachCellCopy = _.cloneDeep(eachCell)
       if (eachCell.rowIndex !== centerSpot.rowIndex && eachCell.colIndex === centerSpot.colIndex) {
