@@ -8,9 +8,13 @@ export default function HeaderPannel ({
 }) {
   return (
     <div className='headerpannel'>
-      {gameState === 'ready'
-        ? (<Button primary onClick={() => setGameState('started')}>Start</Button>)
-        : (<Button secondary onClick={() => setGameState('ready')}>Pause</Button>)}
+      <Label style={{
+        float: 'left',
+        height: 37,
+        paddingTop: 10
+      }}>
+        Score:{score}
+      </Label>
       <Label style={{
         float: 'right',
         height: 37,

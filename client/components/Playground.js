@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import createActiveObject from '../utils/objectCreater'
+import Cover from './Cover'
 import _ from 'lodash'
 
 const rowNumber = 12
@@ -290,9 +291,10 @@ export default function Playground ({ gameState, setGameState, score, setScore, 
     }
   }, [onGameStart, onGameStop])
 
-  const playgroundStyle = (gameState === 'started') ? null : { filter: 'grayscale(1)' }
+  const playgroundStyle = (gameState === 'started' || gameState === 'ready') ? null : { filter: 'grayscale(1)' }
 
   return (<div className='playground' style={ playgroundStyle }>
+    <Cover gameState={gameState} setGameState={setGameState}/>
     {cells.length && cells.map(cell => {
       if (activeObject.some(objcell => objcell.rowIndex === cell.rowIndex && objcell.colIndex === cell.colIndex)) {
         const [activeCell] = activeObject.filter(objcell => objcell.rowIndex === cell.rowIndex && objcell.colIndex === cell.colIndex)

@@ -8,6 +8,8 @@ body{
   margin:0 auto;
   margin-top: 4px;
   background-color: white;
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-wrap: wrap;
   border: 1px solid rgb(255,255,255);
@@ -18,10 +20,29 @@ body{
   width: 50px;
   height: 50px;
   background-color: rgb(255,255,255);
+  position: relative;
+  z-index: 1;
+}
+
+.mainPage {
+  position: relative;
 }
 
 .headerpannel {
-  width:500px;
+  width:502px;
+  position: relative;
   margin:0 auto;
   margin-top:4px;
+}
+
+.cover {
+  position: fixed;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  z-index: 4;
+  background-color: red;
+  width: 502px;
+  height: 600px;
 }

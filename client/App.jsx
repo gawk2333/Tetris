@@ -22,10 +22,10 @@ const App = () => {
   }
 
   return (
-    <div onKeyDown={keyDownHandler}>
+    <div className='mainPage' onKeyDown={keyDownHandler}>
       <HeaderPannel gameState={gameState}
         setGameState={setGameState}
-        score = {score} />
+        score = {score}/>
       <Playground gameState = {gameState}
         setGameState={setGameState}
         score={score}
