@@ -20,17 +20,26 @@ export default function Cover ({ gameState, setGameState }) {
     return { zIndex: zIndex, opacity: opacity }
   }
 
-  return (
-    <div className='cover' style={getCanvasStyle()}>
-      { gameState === 'ready'
-        ? (<Button primary style={{ marginTop: 100 }}
+  const renderButton = () => {
+    switch (gameState) {
+      default:
+      case 'ready':
+        return (<Button primary style={{ marginTop: 100 }}
           onClick={() => setGameState('started')}>
       Start
         </Button>)
-        : (<Button secondary style={{ marginTop: 100 }}
-          onClick={() => setGameState('ready')}>
-      Pause
-        </Button>) }
+      case 'started':
+      case 'game over':
+        return (<Button secondary style={{ marginTop: 100 }}
+          onClick={() => setGameState('started')}>
+      new game
+        </Button>)
+    }
+  }
+
+  return (
+    <div className='cover' style={getCanvasStyle()}>
+      {renderButton()}
     </div>
   )
 }

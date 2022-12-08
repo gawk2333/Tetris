@@ -5,16 +5,23 @@ import _ from 'lodash'
 
 const rowNumber = 12
 const colNumber = 10
-let gameInterval
 const activeCellSpots = createActiveObject()
 
-export default function Playground ({ gameState, setGameState, score, setScore, getKeyCode, keyPressNumber }) {
+export default function Playground ({
+  gameState,
+  setGameState,
+  score,
+  setScore,
+  getKeyCode,
+  keyPressNumber,
+  gameTime
+}) {
   const [cells, setCells] = useState([])
   const [activeObject, setActiveObject] = useState(activeCellSpots)
 
   const moveObject = (objectCells, rowfix, colfix) => {
     const objectCopy = _.cloneDeep(objectCells)
-    clearTimeout(gameInterval)
+    // clearTimeout(gameInterval)
     const movedObject = objectCopy.map(cell => {
       cell.rowIndex += rowfix
       cell.colIndex += colfix
@@ -58,7 +65,6 @@ export default function Playground ({ gameState, setGameState, score, setScore, 
       console.log('stop')
     } else {
       setActiveObject(rotatedCells)
-      clearTimeout(gameInterval)
     }
   }
 
@@ -256,40 +262,21 @@ export default function Playground ({ gameState, setGameState, score, setScore, 
     const availableArr = activeObject.map(eachCell => {
       return checkIfTheNextSpotAvailable(eachCell, 'down')
     })
+    console.log('number', keyPressNumber)
     if (availableArr.some(result => result === false)) {
-      clearTimeout(gameInterval)
       settleCurrentObject()
     } else {
       const newActiveObject = activeObject.map(cell => {
         cell.rowIndex++
         return cell
       })
-      clearTimeout(gameInterval)
       setActiveObject(newActiveObject)
     }
-  }, [activeObject])
-
-  const onGameStart = useCallback(() => {
-    gameInterval = setTimeout(() => {
-      whenGameRunning()
-    }, 1000)
-  }, [gameState, whenGameRunning])
-
-  const onGameStop = useCallback(() => {
-    // const newObject = _.cloneDeep(activeObject)
-    // const pausedObject = newObject.map(spot => {
-    //   spot.active = false
-    //   clearTimeout(gameInterval)
-    // })
-  }, [gameState])
+  }, [activeObject, keyPressNumber])
 
   useEffect(() => {
-    if (gameState === 'started') {
-      onGameStart()
-    } else {
-      onGameStop()
-    }
-  }, [onGameStart, onGameStop])
+    whenGameRunning()
+  }, [gameTime])
 
   const playgroundStyle = (gameState === 'started' || gameState === 'ready') ? null : { filter: 'grayscale(1)' }
 

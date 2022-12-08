@@ -6,33 +6,11 @@ body{
   width: 502px;
   height: 600px;
   margin:0 auto;
-  margin-top: 4px;
   background-color: white;
   position: relative;
-  z-index: 1;
   display: flex;
   flex-wrap: wrap;
-  border: 1px solid rgb(255,255,255);
-  border-radius: 2px;
-}
-
-.cell {
-  width: 50px;
-  height: 50px;
-  background-color: rgb(255,255,255);
-  position: relative;
-  z-index: 1;
-}
-
-.mainPage {
-  position: relative;
-}
-
-.headerpannel {
-  width:502px;
-  position: relative;
-  margin:0 auto;
-  margin-top:4px;
+  border-radius: 3px;
 }
 
 .cover {
@@ -43,6 +21,32 @@ body{
   justify-content: center;
   z-index: 4;
   background-color: red;
+  border: 1px solid rgb(255,255,255);
+  border-radius: 3px;
   width: 502px;
   height: 600px;
+}
+
+.cell {
+  width: 50px;
+  height: 50px;
+  background-color: rgb(255,255,255);
+  position: relative;
+  z-index: 1;
+  border-radius: 2px;
+}
+
+.mainPage {
+  position: relative;
+  overflow: hidden;
+}
+
+.headerpannel {
+  width:502px;
+  height: 37px;
+  background-color: beige;
+  position: relative;
+  margin:0 auto;
+  margin-top:4px;
+  margin-bottom: 4px;
 }
