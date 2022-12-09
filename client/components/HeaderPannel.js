@@ -1,5 +1,6 @@
 import React from 'react'
 import { Label } from 'semantic-ui-react'
+import isMobile from '../utils/isMobile'
 
 export default function HeaderPannel ({
   score,
@@ -13,10 +14,10 @@ export default function HeaderPannel ({
         fontSize: 19,
         color: 'red'
       }}>
-        Time:{parseInt(gameTime / 3600)}Hr,
-        {parseInt((gameTime % 3600) / 60)}Min,
-        {parseInt(gameTime % 60)}S
+        Time:{gameTime}s
       </Label>
+      {navigator.platform}-
+      {isMobile().toString()}
       <Label style={{
         height: 37,
         width: '40%',
