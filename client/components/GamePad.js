@@ -76,7 +76,7 @@ export default function GamePad ({
       <Button
         onClick={() => onVirtualKeyClicked(39)}
         color='orange'
-        icon='arrow alternate circle right'
+        icon='arrow circle right'
         style={{
           width: 56,
           height: 56,
