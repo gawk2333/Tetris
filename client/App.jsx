@@ -2,7 +2,8 @@ import React, { useRef, useEffect, useState } from 'react'
 import Playground from './components/Playground'
 import HeaderPannel from './components/HeaderPannel'
 import GamePad from './components/GamePad'
-import isMobile from './utils/isMobile'
+import { isMobile } from 'react-device-detect'
+
 // import { connect } from 'react-redux'
 
 const App = () => {
@@ -11,7 +12,7 @@ const App = () => {
   const [gameTime, setGameTime] = useState(0)
   const [keyCode, setKeyCode] = useState(null)
   const [score, setScore] = useState(0)
-  const mobile = isMobile()
+
   const keydownRef = useRef(null)
 
   const keyDownHandler = (e) => {
@@ -28,9 +29,7 @@ const App = () => {
 
   useEffect(() => {
     if (gameState === 'started') {
-      console.log(keydownRef)
       if (keydownRef) {
-        console.log(keydownRef)
         keydownRef.current.focus()
       }
       setTimeout(() => setGameTime(gameTime + 1), 1000)
@@ -56,7 +55,7 @@ const App = () => {
         setScore={setScore}
         getKeyCode={getKeyCode}
         keyPressNumber={keyPressNumber}/>
-      {mobile &&
+      {isMobile &&
      <GamePad
        keyPressNumber={keyPressNumber}
        setKeyPressNumber={setKeyPressNumber}
