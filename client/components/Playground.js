@@ -19,7 +19,6 @@ export default function Playground ({
 }) {
   const [cells, setCells] = useState([])
   const [activeObject, setActiveObject] = useState(activeCellSpots)
-
   const moveObject = (objectCells, rowfix, colfix) => {
     const objectCopy = _.cloneDeep(objectCells)
     // clearTimeout(gameInterval)
@@ -92,6 +91,7 @@ export default function Playground ({
 
   // keydown actions
   useEffect(() => {
+    console.log('key down')
     const onKeyCodeChanges = () => {
       const keyCode = getKeyCode()
       const newObject = _.cloneDeep(activeObject)
@@ -275,12 +275,14 @@ export default function Playground ({
   const blockStyle = (gameState === 'started' || gameState === 'ready') ? null : 'filter: grayscale(1)'
 
   return (<div className='playground'>
-    <Cover
-      gameState={gameState}
-      setGameState={setGameState}
-      createCells={createCells}
-      setGameTime={setGameTime}
-    />
+    {gameState !== 'started'
+      ? <Cover
+        gameState={gameState}
+        setGameState={setGameState}
+        createCells={createCells}
+        setGameTime={setGameTime}
+      />
+      : null}
     {cells.length && cells.map(cell => {
       if (activeObject.some(objcell => objcell.rowIndex === cell.rowIndex && objcell.colIndex === cell.colIndex)) {
         const [activeCell] = activeObject.filter(objcell => objcell.rowIndex === cell.rowIndex && objcell.colIndex === cell.colIndex)

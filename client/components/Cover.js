@@ -3,21 +3,17 @@ import { Button, Image } from 'semantic-ui-react'
 
 export default function Cover ({ gameState, setGameState, createCells, setGameTime }) {
   const getCanvasStyle = () => {
-    let zIndex = 4
     let opacity = 1
     switch (gameState) {
       default:
       case 'ready':
-        break
       case 'started':
-        zIndex = -1
         break
       case 'game over':
-        zIndex = 4
         opacity = 0.9
         break
     }
-    return { zIndex: zIndex, opacity: opacity }
+    return { opacity: opacity }
   }
 
   const renderButton = () => {
