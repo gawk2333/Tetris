@@ -1,7 +1,7 @@
 import React from 'react'
-import { Button } from 'semantic-ui-react'
+import { Button, Image } from 'semantic-ui-react'
 
-export default function Cover ({ gameState, setGameState }) {
+export default function Cover ({ gameState, setGameState, createCells, setGameTime }) {
   const getCanvasStyle = () => {
     let zIndex = 4
     let opacity = 1
@@ -14,7 +14,7 @@ export default function Cover ({ gameState, setGameState }) {
         break
       case 'game over':
         zIndex = 4
-        opacity = 0.5
+        opacity = 0.9
         break
     }
     return { zIndex: zIndex, opacity: opacity }
@@ -24,21 +24,37 @@ export default function Cover ({ gameState, setGameState }) {
     switch (gameState) {
       default:
       case 'ready':
-        return (<Button primary style={{ marginTop: 100 }}
+        return (<Button color='red'
           onClick={() => setGameState('started')}>
       Start
         </Button>)
       case 'started':
       case 'game over':
         return (<Button secondary style={{ marginTop: 100 }}
-          onClick={() => setGameState('started')}>
+          onClick={() => {
+            setGameState('started')
+            createCells()
+            setGameTime(0)
+          }}>
       new game
         </Button>)
     }
   }
 
+  const getImageUrl = () => {
+    switch (gameState) {
+      default:
+        return null
+      case 'ready':
+        return 'Tetris.png'
+      case 'game over':
+        return 'gameover.jpeg'
+    }
+  }
+
   return (
     <div className='cover' style={getCanvasStyle()}>
+      <Image src={getImageUrl()}/>
       {renderButton()}
     </div>
   )

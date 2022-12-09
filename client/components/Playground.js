@@ -14,7 +14,8 @@ export default function Playground ({
   setScore,
   getKeyCode,
   keyPressNumber,
-  gameTime
+  gameTime,
+  setGameTime
 }) {
   const [cells, setCells] = useState([])
   const [activeObject, setActiveObject] = useState(activeCellSpots)
@@ -69,22 +70,23 @@ export default function Playground ({
   }
 
   // initialize
-  useEffect(() => {
-    const createCells = () => {
-      const currentCells = []
-      for (let i = 1; i <= rowNumber; i++) {
-        for (let j = 1; j <= colNumber; j++) {
-          const newCell = {
-            rowIndex: i,
-            colIndex: j,
-            active: false,
-            hasDroped: false
-          }
-          currentCells.push(newCell)
+  const createCells = () => {
+    const currentCells = []
+    for (let i = 1; i <= rowNumber; i++) {
+      for (let j = 1; j <= colNumber; j++) {
+        const newCell = {
+          rowIndex: i,
+          colIndex: j,
+          active: false,
+          hasDroped: false
         }
+        currentCells.push(newCell)
       }
-      setCells(currentCells)
     }
+    setCells(currentCells)
+  }
+
+  useEffect(() => {
     createCells()
   }, [])
 
@@ -101,7 +103,6 @@ export default function Playground ({
           availableArr = newObject.map(eachCell => {
             return checkIfTheNextSpotAvailable(eachCell, 'left')
           })
-          // console.log('new', availableArr)
           if (availableArr.some(result => result === false)) {
             console.log('stop')
           } else {
@@ -115,7 +116,6 @@ export default function Playground ({
           availableArr = newObject.map(eachCell => {
             return checkIfTheNextSpotAvailable(eachCell, 'right')
           })
-          // console.log('new', availableArr)
           if (availableArr.some(result => result === false)) {
             console.log('stop')
           } else {
@@ -126,7 +126,6 @@ export default function Playground ({
           availableArr = newObject.map(eachCell => {
             return checkIfTheNextSpotAvailable(eachCell, 'down')
           })
-          // console.log('new', availableArr)
           if (availableArr.some(result => result === false)) {
             console.log('stop')
           } else {
@@ -173,7 +172,6 @@ export default function Playground ({
 
     if (clearableRowNumber === 0) {
       setActiveObject(createActiveObject())
-      console.log('create')
     }
   }, [cells])
 
@@ -195,7 +193,6 @@ export default function Playground ({
         rowIndex: spot.rowIndex + 1
       }
       const [nextCell] = cells.filter(cell => cell.rowIndex === nextSpot.rowIndex && cell.colIndex === nextSpot.colIndex)
-      // console.log('next down', nextCell)
       if (nextCell && nextCell.hasDroped) {
         return false
       }
@@ -250,10 +247,8 @@ export default function Playground ({
       .filter(cell => !currentObject.some(objectcell =>
         objectcell.rowIndex === cell.rowIndex &&
         objectcell.colIndex === cell.colIndex))
-    // console.log('filtered1', filteredCells)
     const combinedCells = filteredCells
       .concat(currentObject)
-    // console.log('filtered2', filteredCells)
     setCells(combinedCells.sort((a, b) => a.rowIndex - b.rowIndex ||
     a.colIndex - b.colIndex))
   }
@@ -262,7 +257,6 @@ export default function Playground ({
     const availableArr = activeObject.map(eachCell => {
       return checkIfTheNextSpotAvailable(eachCell, 'down')
     })
-    console.log('number', keyPressNumber)
     if (availableArr.some(result => result === false)) {
       settleCurrentObject()
     } else {
@@ -278,14 +272,19 @@ export default function Playground ({
     whenGameRunning()
   }, [gameTime])
 
-  const playgroundStyle = (gameState === 'started' || gameState === 'ready') ? null : { filter: 'grayscale(1)' }
+  const blockStyle = (gameState === 'started' || gameState === 'ready') ? null : 'filter: grayscale(1)'
 
-  return (<div className='playground' style={ playgroundStyle }>
-    <Cover gameState={gameState} setGameState={setGameState}/>
+  return (<div className='playground'>
+    <Cover
+      gameState={gameState}
+      setGameState={setGameState}
+      createCells={createCells}
+      setGameTime={setGameTime}
+    />
     {cells.length && cells.map(cell => {
       if (activeObject.some(objcell => objcell.rowIndex === cell.rowIndex && objcell.colIndex === cell.colIndex)) {
         const [activeCell] = activeObject.filter(objcell => objcell.rowIndex === cell.rowIndex && objcell.colIndex === cell.colIndex)
-        return (<div className='cell' style={{ backgroundColor: activeCell.color, border: activeCell.border }} key={`${cell.rowIndex}-${cell.colIndex}`}></div>)
+        return (<div className='cell' style={{ backgroundColor: activeCell.color, border: activeCell.border, blockStyle }} key={`${cell.rowIndex}-${cell.colIndex}`}></div>)
       } else {
         return (<div className='cell' style={{ backgroundColor: cell.color, border: cell.border }} key={`${cell.rowIndex}-${cell.colIndex}`}></div>)
       }

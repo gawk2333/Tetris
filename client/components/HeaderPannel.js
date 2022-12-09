@@ -8,16 +8,21 @@ export default function HeaderPannel ({
   return (
     <div className='headerpannel'>
       <Label style={{
-        float: 'left',
         height: 37,
-        paddingTop: 10
+        width: '40%',
+        fontSize: 19,
+        color: 'red'
       }}>
-        time:{parseInt(gameTime / 3600)}:{parseInt((gameTime % 3600) / 60)}:{parseInt(gameTime % 60)}
+        Time:{parseInt(gameTime / 3600)}Hr,
+        {parseInt((gameTime % 3600) / 60)}Min,
+        {parseInt(gameTime % 60)}S
       </Label>
       <Label style={{
-        float: 'right',
         height: 37,
-        paddingTop: 10
+        width: '40%',
+        float: 'right',
+        fontSize: 19,
+        color: 'blue'
       }}>
         Score:{score}
       </Label>

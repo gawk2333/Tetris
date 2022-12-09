@@ -9,6 +9,7 @@ const App = () => {
   const [gameTime, setGameTime] = useState(0)
   const [keyCode, setKeyCode] = useState(null)
   const [score, setScore] = useState(0)
+
   const keyDownHandler = (e) => {
     e.preventDefault()
     if (e) {
@@ -32,9 +33,11 @@ const App = () => {
       <HeaderPannel
         gameTime={gameTime}
         score = {score}/>
-      <Playground gameState = {gameState}
+      <Playground
+        gameState = {gameState}
         setGameState={setGameState}
         gameTime={gameTime}
+        setGameTime = {setGameTime}
         score={score}
         setScore={setScore}
         getKeyCode={getKeyCode}
