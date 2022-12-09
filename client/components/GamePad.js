@@ -45,7 +45,8 @@ export default function GamePad ({
           height: 56,
           margin: 0,
           padding: 0,
-          opacity: 0.5
+          opacity: 0.5,
+          zIndex: 6
         }}/>
       <div className='gamepadkey'></div>
       <Button
@@ -57,7 +58,8 @@ export default function GamePad ({
           height: 56,
           margin: 0,
           padding: 0,
-          opacity: 0.5
+          opacity: 0.5,
+          zIndex: 6
         }}/>
       <Button
         onClick={() => onVirtualKeyClicked(40)}
@@ -68,7 +70,8 @@ export default function GamePad ({
           height: 56,
           margin: 0,
           padding: 0,
-          opacity: 0.5
+          opacity: 0.5,
+          zIndex: 6
         }}/>
       <Button
         onClick={() => onVirtualKeyClicked(39)}
@@ -79,7 +82,8 @@ export default function GamePad ({
           height: 56,
           margin: 0,
           padding: 0,
-          opacity: 0.5
+          opacity: 0.5,
+          zIndex: 6
         }}/>
 
     </div>
