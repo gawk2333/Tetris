@@ -1,5 +1,5 @@
 body{
-  background-color: rgb(223, 226, 194) !important;
+  background-image: url("dotbg.png") !important;
 }
 
 
@@ -14,7 +14,7 @@ body{
     width: 502px;
     height: 600px;
     margin:0 auto;
-    background-color: white;
+    background-color: #000000;
     position: relative;
     display: flex;
     flex-wrap: wrap;
@@ -57,7 +57,7 @@ body{
       width: 100vw;
       height: 120vw;
       margin:0;
-      background-color: white;
+      background-color: #000000;
       position: relative;
       display: flex;
       flex-wrap: wrap;
