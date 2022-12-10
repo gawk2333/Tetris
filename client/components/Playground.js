@@ -21,7 +21,6 @@ export default function Playground ({
   const [activeObject, setActiveObject] = useState(activeCellSpots)
   const moveObject = (objectCells, rowfix, colfix) => {
     const objectCopy = _.cloneDeep(objectCells)
-    // clearTimeout(gameInterval)
     const movedObject = objectCopy.map(cell => {
       cell.rowIndex += rowfix
       cell.colIndex += colfix
@@ -91,7 +90,6 @@ export default function Playground ({
 
   // keydown actions
   useEffect(() => {
-    console.log('key down')
     const onKeyCodeChanges = () => {
       const keyCode = getKeyCode()
       const newObject = _.cloneDeep(activeObject)
