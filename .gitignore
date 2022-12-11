@@ -20,6 +20,8 @@ coverage/*
 
 .DS_Store
 
+server/db/dev.sqlite3
+
 #amplify-do-not-edit-begin
 amplify/\#current-cloud-backend
 amplify/.config/local-*
