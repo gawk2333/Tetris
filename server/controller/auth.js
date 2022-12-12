@@ -42,8 +42,7 @@ const userRegister = async (req, res) => {
       }
     )
 
-    const result = await db.refreshUserToken({ userName, newToken: token })
-    console.log(result)
+    await db.refreshUserToken({ userName, newToken: token })
 
     res.json({
       error: false,
@@ -68,7 +67,6 @@ const userTokenLogin = async (req, res, next) => {
     }
 
     const [user] = await db.checkUserByToken({ token })
-    console.log('user', user)
 
     if (!user) {
       res.json({
@@ -86,8 +84,7 @@ const userTokenLogin = async (req, res, next) => {
       }
     )
 
-    const result = db.refreshUserToken({ previousToken: token, newToken })
-    console.log('result', result)
+    await db.refreshUserToken({ user: user.user_name, newToken })
 
     user.token = newToken
 
