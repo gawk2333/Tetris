@@ -6,14 +6,14 @@ const userRegister = async (req, res) => {
   const { userName, password, score } = req.body
 
   try {
-    if (!(userName && password && score)) {
+    if (!(userName && password)) {
       res.json({
         error: true,
         message: 'All input is required'
       })
       return
     }
-    const [oldUser] = await db.checkIfUserExists({ userName })
+    const [oldUser] = await db.checkUserByName({ userName })
 
     if (oldUser) {
       res.json({
@@ -41,14 +41,65 @@ const userRegister = async (req, res) => {
         expiresIn: '2h'
       }
     )
+
+    const result = await db.refreshUserToken({ userName, newToken: token })
+    console.log(result)
+
     res.json({
       error: false,
-      user: userName,
+      userName,
       token,
       message: 'User created'
     })
   } catch (e) {
     res.json({ message: e.message })
+  }
+}
+
+const userTokenLogin = async (req, res, next) => {
+  const { token } = req.body
+  try {
+    if (!token) {
+      res.json({
+        error: true,
+        message: 'Token is required'
+      })
+      return
+    }
+
+    const [user] = await db.checkUserByToken({ token })
+    console.log('user', user)
+
+    if (!user) {
+      res.json({
+        error: true,
+        token,
+        message: 'User does not exist'
+      })
+      return
+    }
+    const newToken = jwt.sign(
+      { userId: user.id, userName: user.user_name },
+      process.env.TOKEN_KEY,
+      {
+        expiresIn: '2h'
+      }
+    )
+
+    const result = db.refreshUserToken({ previousToken: token, newToken })
+    console.log('result', result)
+
+    user.token = newToken
+
+    res.json({
+      error: false,
+      user
+    })
+  } catch (e) {
+    res.json({
+      error: true,
+      message: e.message
+    })
   }
 }
 
@@ -61,7 +112,7 @@ const userLogin = async (req, res, next) => {
       return
     }
 
-    const [user] = await db.checkIfUserExists({ userName })
+    const [user] = await db.checkUserByName({ userName })
     console.log('user', user)
 
     if (!user) {
@@ -81,6 +132,9 @@ const userLogin = async (req, res, next) => {
         }
       )
       user.token = token
+
+      db.refreshUserToken({ userName, newToken: token })
+
       res.json({
         error: false,
         user
@@ -96,5 +150,6 @@ const userLogin = async (req, res, next) => {
 
 module.exports = {
   userRegister,
-  userLogin
+  userLogin,
+  userTokenLogin
 }

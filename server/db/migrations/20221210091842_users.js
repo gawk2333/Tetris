@@ -8,6 +8,7 @@ exports.up = function (knex) {
     table.string('user_name')
     table.string('password')
     table.integer('score')
+    table.string('token')
   })
 }
 

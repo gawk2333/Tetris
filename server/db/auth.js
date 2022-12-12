@@ -1,15 +1,27 @@
 const db = require('./connection')
 
-function checkIfUserExists ({ userName }) {
+function checkUserByName ({ userName }) {
   return db('users')
     .where('user_name', userName)
 }
 
-function createUser ({ userName, password, score }) {
+function checkUserByToken ({ token }) {
+  return db('users')
+    .where('token', token)
+}
+
+function refreshUserToken ({ userName, newToken }) {
+  return db('users')
+    .where('user_name', userName)
+    .update('token', newToken)
+}
+
+function createUser ({ userName, password, score, token }) {
   return db('users').insert([{
     user_name: userName,
     password,
-    score
+    score,
+    token
   }],
   ['id']
   )
@@ -17,5 +29,7 @@ function createUser ({ userName, password, score }) {
 
 module.exports = {
   createUser,
-  checkIfUserExists
+  checkUserByName,
+  checkUserByToken,
+  refreshUserToken
 }
