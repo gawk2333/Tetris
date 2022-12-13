@@ -19,7 +19,7 @@ const clearStorage = () => {
 }
 
 const reducer = (state, action) => {
-  console.log('LoginContext reducer -- action:', action)
+  // console.log('LoginContext reducer -- action:', action)
   switch (action.type) {
     case types.LOGIN: {
       const {
