@@ -5,14 +5,14 @@
   "main": "index.js",
   "scripts": {
     "start": "node server",
-    "build": "NODE_ENV=production npm run webpack && npm run migrate",
+    "build": "NODE_ENV=production npm run migrate && npm run webpack",
     "dev": "NODE_ENV=production run-p dev:client dev:server migrate",
     "dev:client": "npm run webpack -- --watch",
     "dev:server": "nodemon server",
     "webpack": "webpack --config ./client/webpack.config.js",
     "test": "jest",
     "test:watch": "jest --watchAll --verbose",
-    "migrate": "cd server/db && knex migrate:rollback && knex migrate:latest && knex seed:run",
+    "migrate": "cd server/db && env $(cat ../../.env) npx knex migrate:rollback && env $(cat ../../.env) npx knex migrate:latest && env $(cat ../../.env) npx knex seed:run",
     "lint": "eslint --ext .js,.jsx ."
   },
   "repository": {
