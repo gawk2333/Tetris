@@ -33,7 +33,7 @@ module.exports = {
       ssl: { rejectUnauthorized: false },
       user: 'postgres',
       password: 'wps1029343264',
-      database: process.env.DATABASE_NAME
+      database: 'tetris'
     },
     pool: {
       min: 2,

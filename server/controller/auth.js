@@ -110,7 +110,6 @@ const userLogin = async (req, res, next) => {
     }
 
     const [user] = await db.checkUserByName({ userName })
-    console.log('user', user)
 
     if (!user) {
       res.json({

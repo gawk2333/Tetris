@@ -27,9 +27,14 @@ function createUser ({ userName, password, score, token }) {
   )
 }
 
+function getAllUsers () {
+  return db('users').select()
+}
+
 module.exports = {
   createUser,
   checkUserByName,
   checkUserByToken,
-  refreshUserToken
+  refreshUserToken,
+  getAllUsers
 }
