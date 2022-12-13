@@ -84,7 +84,7 @@ const userTokenLogin = async (req, res, next) => {
       }
     )
 
-    await db.refreshUserToken({ user: user.user_name, newToken })
+    await db.refreshUserToken({ userName: user.user_name, newToken })
 
     user.token = newToken
 

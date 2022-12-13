@@ -1,4 +1,5 @@
 const path = require('path')
+require('dotenv').config()
 
 module.exports = {
   development: {
@@ -26,11 +27,12 @@ module.exports = {
   production: {
     client: 'postgresql',
     connection: {
-      connectionString: `jdbc:postgresql://${process.env.DATABASE_URL}`,
+      host: process.env.DATABASE_URL,
+      port: process.env.DATABASE_PORT,
       ssl: { rejectUnauthorized: false },
-      user: 'postgres',
-      password: 'thisisthemasterpassword',
-      database: 'database-2'
+      user: process.env.DATABASE_USER,
+      password: process.env.DATABASE_PASSWORD,
+      database: process.env.DATABASE_NAME
     },
     pool: {
       min: 2,
@@ -38,6 +40,7 @@ module.exports = {
     },
     migrations: {
       tableName: 'knex_migrations'
-    }
+    },
+    acquireConnectionTimeout: 10000
   }
 }

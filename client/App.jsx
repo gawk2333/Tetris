@@ -22,7 +22,6 @@ const App = () => {
   const loginState = useContext(LoginContext.State)
 
   useEffect(async () => {
-    console.log('233')
     if ((!token) || (_.isUndefined(token))) {
       loginDispatch({ type: LoginContext.types.LOGOUT })
     } else {
@@ -74,11 +73,15 @@ const App = () => {
       onKeyDown={keyDownHandler}
       ref={keydownRef}
     >
-      <Headerr score={score} token={token}/>
+      <Headerr
+        score={score}
+        token={token}
+        userName = {loginState.userName}/>
       <ToastContainer/>
       <HeaderPannel
         gameTime={gameTime}
-        score = {score}/>
+        score = {score}
+      />
       <Playground
         gameState = {gameState}
         setGameState={setGameState}
