@@ -1,5 +1,6 @@
 const path = require('path')
 require('dotenv').config()
+console.log(process.env.DATABASE_URL)
 
 module.exports = {
   development: {
@@ -27,11 +28,11 @@ module.exports = {
   production: {
     client: 'postgresql',
     connection: {
-      host: process.env.DATABASE_URL,
+      host: 'database-3.cxekl5ujmctl.ap-southeast-2.rds.amazonaws.com',
       port: process.env.DATABASE_PORT,
       ssl: { rejectUnauthorized: false },
-      user: process.env.DATABASE_USER,
-      password: process.env.DATABASE_PASSWORD,
+      user: 'postgres',
+      password: 'wps1029343264',
       database: process.env.DATABASE_NAME
     },
     pool: {
