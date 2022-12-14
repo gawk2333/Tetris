@@ -28,12 +28,12 @@ module.exports = {
   production: {
     client: 'postgresql',
     connection: {
-      host: 'database-3.cxekl5ujmctl.ap-southeast-2.rds.amazonaws.com',
-      port: '5432',
+      host: process.env.DATABASE_URL,
+      port: process.env.DATABASE_PORT,
       ssl: { rejectUnauthorized: false },
-      user: 'postgres',
-      password: 'wps1029343264',
-      database: 'tetris'
+      user: process.env.DATABASE_USER,
+      password: process.env.DATABASE_PASSWORD,
+      database: process.env.DATABASE_NAME
     },
     pool: {
       min: 2,
