@@ -20,10 +20,7 @@ export default function Cover ({ gameState, setGameState, createCells, setGameTi
     switch (gameState) {
       default:
       case 'ready':
-        return (<Button color='red'
-          onClick={() => setGameState('started')}>
-      Start
-        </Button>)
+        return null
       case 'started':
       case 'game over':
         return (<Button secondary style={{ marginTop: 100 }}
@@ -40,9 +37,8 @@ export default function Cover ({ gameState, setGameState, createCells, setGameTi
   const getImageUrl = () => {
     switch (gameState) {
       default:
-        return null
       case 'ready':
-        return 'Tetris.png'
+        return null
       case 'game over':
         return 'gameover.jpeg'
     }

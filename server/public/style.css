@@ -1,23 +1,35 @@
 body{
   background-image: url("dotbg.png") !important;
+  /* overflow: hidden; */
 }
-
 
 .mainPage {
   position: relative;
-  overflow: hidden;
+  /* overflow: hidden; */
   height: 100vh;
 }
 
-@media screen and (min-width:502px){
+@media screen and (min-width:500px) and (min-height:600px){
 .playground {
-    width: 502px;
-    height: 600px;
+    width: 400px;
+    height: 480px;
     margin:0 auto;
     background-color: #000000;
     position: relative;
     display: flex;
     flex-wrap: wrap;
+    border-radius: 3px;
+  }
+  .welcomescreen {
+    width: 400px;
+    height: 480px;
+    margin:0 auto;
+    background-color: #000000;
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: center;
     border-radius: 3px;
   }
   .cover {
@@ -30,19 +42,19 @@ body{
     background-color: #000000;
     border: 1px solid rgb(255,255,255);
     border-radius: 3px;
-    width: 502px;
-    height: 600px;
+    width: 400px;
+    height: 480px;
   }
   .cell {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     background-color: rgb(255,255,255);
     position: relative;
     z-index: 1;
     border-radius: 2px;
   }
   .headerpannel {
-    width:502px;
+    width:400px;
     height: 37px;
     position: relative;
     margin:0 auto;
@@ -52,12 +64,25 @@ body{
 }
 
 
-@media screen and (max-width:502px){
+@media screen and (max-width:500px) and (max-height:600px){
   .playground {
       width: 100vw;
       height: 120vw;
       margin:0;
       background-color: #000000;
+      position: relative;
+      display: flex;
+      flex-wrap: wrap;
+      border-radius: 3px;
+      min-width: 324px;
+    }
+    .welcomescreen {
+      width: 100vw;
+      height: 120vw;
+      margin:0;
+      background-color: #000000;
+      align-items: flex-start;
+      justify-content: center;
       position: relative;
       display: flex;
       flex-wrap: wrap;

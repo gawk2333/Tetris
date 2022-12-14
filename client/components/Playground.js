@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import createActiveObject from '../utils/objectCreater'
 import Cover from './Cover'
+import { Image, Button } from 'semantic-ui-react'
 import _ from 'lodash'
 
 const rowNumber = 12
@@ -272,22 +273,32 @@ export default function Playground ({
 
   const blockStyle = (gameState === 'started' || gameState === 'ready') ? null : 'filter: grayscale(1)'
 
-  return (<div className='playground'>
-    {gameState !== 'started'
-      ? <Cover
-        gameState={gameState}
-        setGameState={setGameState}
-        createCells={createCells}
-        setGameTime={setGameTime}
-      />
-      : null}
-    {cells.length && cells.map(cell => {
-      if (activeObject.some(objcell => objcell.rowIndex === cell.rowIndex && objcell.colIndex === cell.colIndex)) {
-        const [activeCell] = activeObject.filter(objcell => objcell.rowIndex === cell.rowIndex && objcell.colIndex === cell.colIndex)
-        return (<div className='cell' style={{ backgroundColor: activeCell.color, border: activeCell.border, blockStyle }} key={`${cell.rowIndex}-${cell.colIndex}`}></div>)
-      } else {
-        return (<div className='cell' style={{ backgroundColor: cell.color, border: cell.border }} key={`${cell.rowIndex}-${cell.colIndex}`}></div>)
-      }
-    })}
-  </div>)
+  return (
+    gameState === 'ready'
+      ? <div className='welcomescreen'>
+        <Image src='Tetris.png'/>
+        <Button color='red'
+          onClick={() => setGameState('started')}>
+      Start
+        </Button>
+      </div>
+      : <div className='playground'>
+        {gameState === 'game over'
+          ? <Cover
+            gameState={gameState}
+            setGameState={setGameState}
+            createCells={createCells}
+            setGameTime={setGameTime}
+          />
+          : null}
+        {cells.length && cells.map(cell => {
+          if (activeObject.some(objcell => objcell.rowIndex === cell.rowIndex && objcell.colIndex === cell.colIndex)) {
+            const [activeCell] = activeObject.filter(objcell => objcell.rowIndex === cell.rowIndex && objcell.colIndex === cell.colIndex)
+            return (<div className='cell' style={{ backgroundColor: activeCell.color, border: activeCell.border, blockStyle }} key={`${cell.rowIndex}-${cell.colIndex}`}></div>)
+          } else {
+            return (<div className='cell' style={{ backgroundColor: cell.color, border: cell.border }} key={`${cell.rowIndex}-${cell.colIndex}`}></div>)
+          }
+        })}
+      </div>
+  )
 }

@@ -9,6 +9,7 @@ import jwt from 'jwt-decode'
 import _ from 'lodash'
 import { LoginContext } from './store'
 import { tokenSignInApi } from './api/auth'
+import { Sticky } from 'semantic-ui-react'
 
 const App = () => {
   const [gameState, setGameState] = useState('ready')
@@ -46,7 +47,9 @@ const App = () => {
   }, [loginState.userName])
 
   const keyDownHandler = (e) => {
-    // e.preventDefault()
+    if (gameState === 'started') {
+      e.preventDefault()
+    }
     if (e) {
       setKeyPressNumber(keyPressNumber + 1)
       setKeyCode(e.keyCode)
@@ -73,10 +76,13 @@ const App = () => {
       onKeyDown={keyDownHandler}
       ref={keydownRef}
     >
-      <Headerr
-        score={score}
-        token={token}
-        userName = {loginState.userName}/>
+      <Sticky context={keydownRef}>
+        <Headerr
+          style={{ position: 'sticky', top: 0 }}
+          score={score}
+          token={token}
+          userName = {loginState.userName}/>
+      </Sticky>
       <ToastContainer/>
       <HeaderPannel
         gameTime={gameTime}
