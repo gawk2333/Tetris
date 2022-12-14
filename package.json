@@ -16,7 +16,7 @@
     "lint": "eslint --ext .js,.jsx ."
   },
   "engines": {
-    "node": "16.x"
+    "node": "12.x"
   },
   "repository": {
     "type": "git",
