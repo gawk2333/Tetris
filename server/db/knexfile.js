@@ -1,6 +1,6 @@
 const path = require('path')
 require('dotenv').config()
-console.log(process.env.DATABASE_URL)
+console.log('env', process.env.DATABASE_PORT)
 
 module.exports = {
   development: {
