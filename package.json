@@ -12,7 +12,7 @@
     "webpack": "webpack --config ./client/webpack.config.js",
     "test": "jest",
     "test:watch": "jest --watchAll --verbose",
-    "migrate": "cd server/db && env $(cat backend/.env) npx knex migrate:rollback && env $(cat backend/.env) npx knex migrate:latest && env $(cat backend/.env) npx knex seed:run",
+    "migrate": "cd server/db && npx knex migrate:rollback && npx knex migrate:latest && npx knex seed:run",
     "lint": "eslint --ext .js,.jsx ."
   },
   "repository": {

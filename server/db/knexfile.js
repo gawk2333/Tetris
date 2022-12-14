@@ -29,7 +29,7 @@ module.exports = {
     client: 'postgresql',
     connection: {
       host: 'database-3.cxekl5ujmctl.ap-southeast-2.rds.amazonaws.com',
-      port: process.env.DATABASE_PORT,
+      port: '5432',
       ssl: { rejectUnauthorized: false },
       user: 'postgres',
       password: 'wps1029343264',
