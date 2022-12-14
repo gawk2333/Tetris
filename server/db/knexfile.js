@@ -1,6 +1,8 @@
 const path = require('path')
-require('dotenv').config()
-console.log(process.env.DATABASE_URL)
+if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+  const envConfig = require('dotenv').config()
+  if (envConfig.error) throw envConfig.error
+}
 
 module.exports = {
   development: {
