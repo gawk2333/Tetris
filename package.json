@@ -8,6 +8,7 @@
     "build": "run-p build:client build:server",
     "build:client": "npm run webpack -- --mode production",
     "build:server": "npm run knex -- migrate:latest",
+    "knex": "knex --knexfile ./server/db/knexfile.js",
     "dev": "NODE_ENV=production run-p dev:client dev:server migrate",
     "dev:client": "npm run webpack -- --watch",
     "dev:server": "nodemon server",
