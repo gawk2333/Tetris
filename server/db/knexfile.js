@@ -30,8 +30,16 @@ module.exports = {
   production: {
     client: 'postgresql',
     connection: {
-      connectionString: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false }
+      host: process.env.DATABASE_HOST,
+      port: process.env.DATABASE_PORT,
+      user: process.env.DATABASE_USER,
+      password: process.env.DATABASE_PASSWORD,
+      database: process.env.DATABASE_NAME
+      //       # DATABASE_HOST="database-3.cxekl5ujmctl.ap-southeast-2.rds.amazonaws.com"
+      // # DATABASE_PORT="5432"
+      // # DATABASE_USER="postgres"
+      // # DATABASE_PASSWORD="wps1029343264"
+      // # DATABASE_NAME="tetris"
     },
     pool: {
       min: 2,
