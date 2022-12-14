@@ -1,6 +1,4 @@
 const path = require('path')
-require('dotenv').config()
-console.log('env', process.env.DATABASE_PORT)
 
 module.exports = {
   development: {
@@ -37,7 +35,6 @@ module.exports = {
     },
     migrations: {
       tableName: 'knex_migrations'
-    },
-    acquireConnectionTimeout: 10000
+    }
   }
 }
