@@ -28,6 +28,12 @@ function createUser ({ userName, password, score, token }) {
   )
 }
 
+function updateScore ({ userName, score }) {
+  return db('users')
+    .where('user_name', userName)
+    .update('score', score)
+}
+
 function getAllUsers () {
   return db('users').select()
 }
@@ -37,5 +43,6 @@ module.exports = {
   checkUserByName,
   checkUserByToken,
   refreshUserToken,
-  getAllUsers
+  getAllUsers,
+  updateScore
 }
