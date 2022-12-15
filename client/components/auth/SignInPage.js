@@ -3,6 +3,7 @@ import { Form, Button, Modal } from 'semantic-ui-react'
 import { toast } from 'react-toastify'
 import { LoginContext } from '../../store'
 import { signInApi } from '../../api/auth'
+import { updateScoreApi } from '../../api/score'
 
 function SignInPage ({ score }) {
   const [open, setOpen] = useState(false)
@@ -28,6 +29,23 @@ function SignInPage ({ score }) {
         }
         window.localStorage.setItem('authToken', result.user.token)
         loginDispatch(loginAction)
+        if (result.user.score < score) {
+          const scoreUpdatingResult = await updateScoreApi(
+            {
+              userName: result.user.userName,
+              score
+            })
+          console.log('result', scoreUpdatingResult)
+          if (!scoreUpdatingResult.error) {
+            const updateScoreAction = {
+              type: LoginContext.types.UPDATE_SCORE,
+              payload: {
+                score
+              }
+            }
+            loginDispatch(updateScoreAction)
+          }
+        }
         setOpen(false)
       } else {
         toast.error(result.message)

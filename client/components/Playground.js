@@ -2,7 +2,9 @@ import React, { useCallback, useEffect, useState } from 'react'
 import createActiveObject from '../utils/objectCreater'
 import Cover from './Cover'
 import { Image, Button } from 'semantic-ui-react'
+import { updateScoreApi } from '../api/score'
 import _ from 'lodash'
+import { toast } from 'react-toastify'
 
 const rowNumber = 12
 const colNumber = 10
@@ -17,8 +19,10 @@ export default function Playground ({
   keyPressNumber,
   gameTime,
   setGameTime,
-  userName
+  loginState,
+  loginDispatch
 }) {
+  const userName = loginState.userName
   const [cells, setCells] = useState([])
   const [activeObject, setActiveObject] = useState(activeCellSpots)
   const moveObject = (objectCells, rowfix, colfix) => {
@@ -229,7 +233,7 @@ export default function Playground ({
     }
   }
 
-  const settleCurrentObject = () => {
+  const settleCurrentObject = async () => {
     const currentObject = activeObject.filter(objectCell =>
       cells.some(cell => cell.rowIndex === objectCell.rowIndex &&
         cell.colIndex === objectCell.colIndex))
@@ -241,6 +245,22 @@ export default function Playground ({
 
     if (currentObject.length < 4) {
       setGameState('game over')
+      if (loginState.score < score) {
+        const result = await updateScoreApi({
+          userName: loginState.userName,
+          score
+        })
+        if (result.error) {
+          toast.error(result.message)
+        } else {
+          loginDispatch({
+            type: 'UPDATE_SCORE',
+            payload: {
+              score
+            }
+          })
+        }
+      }
     }
 
     const filteredCells = cells
@@ -290,6 +310,7 @@ export default function Playground ({
           createCells={createCells}
           setGameTime={setGameTime}
           score={score}
+          setScore={setScore}
           userName={userName}
         />
         {cells.length && cells.map(cell => {

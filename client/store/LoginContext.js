@@ -11,7 +11,8 @@ const initialState = {
 
 const types = {
   LOGIN: 'LOGIN',
-  LOGOUT: 'LOGOUT'
+  LOGOUT: 'LOGOUT',
+  UPDATE_SCORE: 'UPDATE_SCORE'
 }
 
 const clearStorage = () => {
@@ -31,6 +32,15 @@ const reducer = (state, action) => {
         userName,
         score,
         token
+      }
+    }
+    case types.UPDATE_SCORE: {
+      const {
+        score
+      } = action.payload
+      return {
+        ...state,
+        score
       }
     }
     default:

@@ -87,6 +87,9 @@ const App = () => {
         <Headerr
           style={{ position: 'sticky', top: 0 }}
           score={score}
+          setGameState={setGameState}
+          setScore={setScore}
+          setGameTime={setGameTime}
           token={token}/>
       </Sticky>
       <ToastContainer/>
@@ -103,7 +106,8 @@ const App = () => {
         setScore={setScore}
         getKeyCode={getKeyCode}
         keyPressNumber={keyPressNumber}
-        userName = {loginState.userName}/>
+        loginState={loginState}
+        loginDispatch={loginDispatch}/>
       {isMobile &&
      <GamePad
        keyPressNumber={keyPressNumber}

@@ -9,6 +9,7 @@ export default function Cover ({
   createCells,
   setGameTime,
   score,
+  setScore,
   userName
 }) {
   const bestScore = useContext(LoginContext.State).score
@@ -42,16 +43,18 @@ export default function Cover ({
       <Image src={getImageUrl()}/>
       <Segment basic inverted center style={{ width: '80%' }}>
         <h5>Your score is:
-          <h3
+          <span
             style={{ color: 'yellow' }}>
             {score}
-          </h3>
+          </span>
           {!userName
-            ? (<>Sign in to save your record</>)
+            ? (<>Sign in to save your record  </>)
             : (<>Your best score is:
-              <h3 style={{ color: '#ff0000' }}>
-                {bestScore}
-              </h3></>)
+              <span style={{ color: '#ff0000' }}>
+                {score < bestScore
+                  ? bestScore
+                  : score}
+              </span></>)
           }
         </h5>
       </Segment>
@@ -63,6 +66,7 @@ export default function Cover ({
           onClick={() => {
             createCells()
             setGameTime(180)
+            setScore(0)
             setGameState('started')
           }}>
       New game
