@@ -25,10 +25,10 @@ function SignUpPage ({ score }) {
           payload: {
             userName: signUpForm.userName,
             score,
-            token: result.token
+            token: result.user.token
           }
         }
-        window.localStorage.setItem('authToken', result.token)
+        window.localStorage.setItem('authToken', result.user.token)
         loginDispatch(loginAction)
         setOpen(false)
       }

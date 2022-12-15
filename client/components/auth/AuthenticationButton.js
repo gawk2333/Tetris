@@ -1,10 +1,10 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import SignInPage from './SignInPage'
 import SignUpPage from './SignUpPage'
 import { Button } from 'semantic-ui-react'
 import { LoginContext } from '../../store'
 
-const AuthenticationButton = ({ score, token, userName }) => {
+const AuthenticationButton = ({ score, token }) => {
   const logoutAction = {
     type: LoginContext.types.LOGOUT
   }
@@ -12,10 +12,14 @@ const AuthenticationButton = ({ score, token, userName }) => {
   const logoutHandler = () => {
     logoutDispatch(logoutAction)
   }
+  const userName = useContext(LoginContext.State).userName
 
+  useEffect(() => {
+    console.log(userName)
+  }, [userName])
   return (
     <>
-      {userName !== 'anonymous' && <div style={{ color: 'yellow', float: 'right' }}>
+      {userName && <div style={{ color: 'yellow', float: 'right' }}>
         <h3>Hi, {userName}
         </h3>
       </div>}

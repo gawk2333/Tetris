@@ -14,7 +14,7 @@ import { Sticky } from 'semantic-ui-react'
 const App = () => {
   const [gameState, setGameState] = useState('ready')
   const [keyPressNumber, setKeyPressNumber] = useState(0)
-  const [gameTime, setGameTime] = useState(0)
+  const [gameTime, setGameTime] = useState(180)
   const [keyCode, setKeyCode] = useState(null)
   const [score, setScore] = useState(0)
   const keydownRef = useRef(null)
@@ -25,6 +25,7 @@ const App = () => {
   useEffect(async () => {
     if ((!token) || (_.isUndefined(token))) {
       loginDispatch({ type: LoginContext.types.LOGOUT })
+      // console.log('token not exist')
     } else {
       const user = jwt(token)
       const timeStamp = Date.now()
@@ -37,8 +38,8 @@ const App = () => {
             type: LoginContext.types.LOGIN,
             payload: {
               userName: user.userName,
-              score,
-              token
+              score: result.user.score,
+              token: result.user.token
             }
           })
         }
@@ -65,7 +66,13 @@ const App = () => {
       if (keydownRef) {
         keydownRef.current.focus()
       }
-      setTimeout(() => setGameTime(gameTime + 1), 1000)
+      if (gameTime > 0) {
+        setTimeout(() =>
+          setGameTime(gameTime - 1),
+        1000)
+      } else {
+        setGameState('game over')
+      }
     }
   }, [gameState, gameTime])
 
@@ -80,8 +87,7 @@ const App = () => {
         <Headerr
           style={{ position: 'sticky', top: 0 }}
           score={score}
-          token={token}
-          userName = {loginState.userName}/>
+          token={token}/>
       </Sticky>
       <ToastContainer/>
       <HeaderPannel
@@ -96,7 +102,8 @@ const App = () => {
         score={score}
         setScore={setScore}
         getKeyCode={getKeyCode}
-        keyPressNumber={keyPressNumber}/>
+        keyPressNumber={keyPressNumber}
+        userName = {loginState.userName}/>
       {isMobile &&
      <GamePad
        keyPressNumber={keyPressNumber}

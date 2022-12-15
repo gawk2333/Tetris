@@ -4,7 +4,7 @@ const State = createContext()
 const Dispatch = createContext()
 
 const initialState = {
-  userName: 'anonymous',
+  userName: '',
   score: 0,
   token: ''
 }
@@ -19,7 +19,6 @@ const clearStorage = () => {
 }
 
 const reducer = (state, action) => {
-  // console.log('LoginContext reducer -- action:', action)
   switch (action.type) {
     case types.LOGIN: {
       const {

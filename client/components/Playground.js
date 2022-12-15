@@ -16,7 +16,8 @@ export default function Playground ({
   getKeyCode,
   keyPressNumber,
   gameTime,
-  setGameTime
+  setGameTime,
+  userName
 }) {
   const [cells, setCells] = useState([])
   const [activeObject, setActiveObject] = useState(activeCellSpots)
@@ -283,14 +284,14 @@ export default function Playground ({
         </Button>
       </div>
       : <div className='playground'>
-        {gameState === 'game over'
-          ? <Cover
-            gameState={gameState}
-            setGameState={setGameState}
-            createCells={createCells}
-            setGameTime={setGameTime}
-          />
-          : null}
+        <Cover
+          gameState={gameState}
+          setGameState={setGameState}
+          createCells={createCells}
+          setGameTime={setGameTime}
+          score={score}
+          userName={userName}
+        />
         {cells.length && cells.map(cell => {
           if (activeObject.some(objcell => objcell.rowIndex === cell.rowIndex && objcell.colIndex === cell.colIndex)) {
             const [activeCell] = activeObject.filter(objcell => objcell.rowIndex === cell.rowIndex && objcell.colIndex === cell.colIndex)

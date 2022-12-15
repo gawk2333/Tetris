@@ -44,10 +44,15 @@ const userRegister = async (req, res) => {
 
     await db.refreshUserToken({ userName, newToken: token })
 
+    const user = {
+      userName,
+      score: 0,
+      token
+    }
+
     res.json({
       error: false,
-      userName,
-      token,
+      user,
       message: 'User created'
     })
   } catch (e) {
@@ -76,21 +81,25 @@ const userTokenLogin = async (req, res, next) => {
       })
       return
     }
-    const newToken = jwt.sign(
-      { userId: user.id, userName: user.user_name },
-      process.env.TOKEN_KEY,
-      {
-        expiresIn: '2h'
-      }
-    )
+    // const newToken = jwt.sign(
+    //   { userId: user.id, userName: user.user_name },
+    //   process.env.TOKEN_KEY,
+    //   {
+    //     expiresIn: '2h'
+    //   }
+    // )
 
-    await db.refreshUserToken({ userName: user.user_name, newToken })
+    // await db.refreshUserToken({ userName: user.user_name, newToken })
 
-    user.token = newToken
+    const loggedUser = {
+      userName: user.user_name,
+      score: user.score,
+      token
+    }
 
     res.json({
       error: false,
-      user
+      user: loggedUser
     })
   } catch (e) {
     res.json({
@@ -120,20 +129,36 @@ const userLogin = async (req, res, next) => {
     }
 
     if (user && (await bcrypt.compare(password, user.password))) {
-      const token = jwt.sign(
+      const newToken = jwt.sign(
         { userId: user.id, userName: user.user_name },
         process.env.TOKEN_KEY,
         {
           expiresIn: '2h'
         }
       )
-      user.token = token
 
-      db.refreshUserToken({ userName, newToken: token })
+      const result = await db.refreshUserToken({ userName, newToken })
 
+      if (result) {
+        const refreshedUser = {
+          userName: user.user_name,
+          score: user.score,
+          token: newToken
+        }
+        res.json({
+          error: false,
+          user: refreshedUser
+        })
+      } else {
+        res.json({
+          error: false,
+          user
+        })
+      }
+    } else {
       res.json({
-        error: false,
-        user
+        error: true,
+        message: 'User not exists or wrong password'
       })
     }
   } catch (e) {

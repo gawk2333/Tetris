@@ -8,6 +8,7 @@ function checkUserByName ({ userName }) {
 function checkUserByToken ({ token }) {
   return db('users')
     .where('token', token)
+    .select()
 }
 
 function refreshUserToken ({ userName, newToken }) {
