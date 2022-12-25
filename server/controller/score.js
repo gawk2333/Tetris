@@ -64,7 +64,7 @@ const scoreBoard = async (req, res) => {
     if (result) {
       res.json({
         error: false,
-        result
+        scoreBoardInfo: result
       })
     } else {
       res.json({

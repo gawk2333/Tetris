@@ -8,3 +8,10 @@ export const updateScoreApi = async ({ userName, score }) => {
       return res.body
     })
 }
+
+export const scoreBoardApi = async () => {
+  return request.get(`${url}/board`)
+    .then(res => {
+      return res.body
+    })
+}

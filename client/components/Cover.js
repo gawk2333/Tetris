@@ -2,6 +2,7 @@ import React, { useContext } from 'react'
 import { Button, Image, Segment } from 'semantic-ui-react'
 import SignInPage from './auth/SignInPage'
 import { LoginContext } from '../store'
+import ScoreBoard from './ScoreBoard'
 
 export default function Cover ({
   gameState,
@@ -41,7 +42,7 @@ export default function Cover ({
   return (
     <div className='cover' style={getCanvasStyle()}>
       <Image src={getImageUrl()}/>
-      <Segment basic inverted center style={{ width: '80%' }}>
+      <Segment basic inverted style={{ width: '80%' }}>
         <h5>Your score is:
           <span
             style={{ color: 'yellow' }}>
@@ -62,6 +63,7 @@ export default function Cover ({
         {!userName &&
         <SignInPage score={score}/>
         }
+        <ScoreBoard/>
         <Button color='orange'
           onClick={() => {
             createCells()
