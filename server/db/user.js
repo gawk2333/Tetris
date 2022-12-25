@@ -38,11 +38,19 @@ function getAllUsers () {
   return db('users').select()
 }
 
+const getScoreBoard = () => {
+  return db('users')
+    .orderBy('score', 'desc')
+    .select('user_name', 'score')
+    .limit(5)
+}
+
 module.exports = {
   createUser,
   checkUserByName,
   checkUserByToken,
   refreshUserToken,
   getAllUsers,
-  updateScore
+  updateScore,
+  getScoreBoard
 }
